@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editează Produse</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    
+    th, td {
+        border: 1px solid var(--caramel);
+        padding: 10px;
+        text-align: center;
+    }
+    
+    th {
+        background-color: var(--roz-glazurat);
+        font-family: 'Lato Bold', Arial, sans-serif;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select {
+        width: 90%;
+        padding: 5px;
+        border: 1px solid var(--caramel);
+        border-radius: 4px;
+        font-family: 'Lato', Arial, sans-serif;
+    }
+    
+    button {
+        padding: 5px 10px;
+        background-color: var(--inghetata-capsuni);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    button:hover {
+        background-color: var(--miere);
+    }
+    
+    .save-button {
+        background-color: var(--ciocolata-neagra);
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Panou Admin</h1>
+        <nav>
+            <ul>
+                <li><a href="/admin">Adauga</a></li>
+                <li><a href="/admin/edit-producs">Editeaza</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Editează Produse</h2>
+        <table id="products-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nume</th>
+                    <th>Descriere</th>
+                    <th>Preț</th>
+                    <th>Imagine</th>
+                    <th>Ingrediente</th>
+                    <th>Categorie</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produs in produse %}
+                <tr data-id="{{ produs['id'] }}">
+                    <td>{{ produs['id'] }}</td>
+                    <td class="view-mode">{{ produs['nume'] }}</td>
+                    <td class="view-mode">{{ produs['descriere'] }}</td>
+                    <td class="view-mode">{{ produs['pret'] }}</td>
+                    <td class="view-mode">{{ produs['imagine'] }}</td>
+                    <td class="view-mode">{{ produs['ingrediente'] }}</td>
+                    <td class="view-mode">
+                        <select style="display: none;">
+                            {% for category in categories %}
+                            <option value="{{ category['categorie'] }}" {% if category['categorie'] == produs['categorie'] %}selected{% endif %}>
+                                {{ category['categorie'] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <span>{{ produs['categorie'] }}</span>
+                    </td>
+                    <td>
+                        <button class="edit-button">Editează</button>
+                        <button class="save-button" style="display: none;">Salvează</button>
+                    </td>
+                </tr>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const table = document.getElementById('products-table');
+
+            table.addEventListener('click', (event) => {
+                const target = event.target;
+
+                if (target.classList.contains('edit-button')) {
+                    const row = target.closest('tr');
+                    enableEditMode(row);
+                }
+
+                if (target.classList.contains('save-button')) {
+                    const row = target.closest('tr');
+                    saveRow(row);
+                }
+            });
+
+            function enableEditMode(row) {
+    row.querySelectorAll('.view-mode').forEach((cell) => {
+        const value = cell.textContent.trim();
+
+        // Verificăm dacă este celula pentru categorie
+        if (cell.querySelector('select')) {
+            cell.querySelector('select').style.display = 'inline-block';
+            cell.querySelector('span').style.display = 'none';
+        } else {
+            const inputType = cell.cellIndex === 3 ? 'number' : 'text'; // Preț este numeric
+            cell.innerHTML = `<input type="${inputType}" value="${value}" />`;
+        }
+    });
+
+    row.querySelector('.edit-button').style.display = 'none';
+    row.querySelector('.save-button').style.display = 'inline-block';
+}
+
+
+
+function saveRow(row) {
+    const productId = row.dataset.id;
+    const inputs = row.querySelectorAll('input');
+    const select = row.querySelector('select');
+    const updatedData = {
+        nume: inputs[0].value,
+        descriere: inputs[1].value,
+        pret: inputs[2].value,
+        imagine: inputs[3].value,
+        ingrediente: inputs[4].value,
+        categorie: select.value,
+    };
+
+    // Trimitem datele actualizate la server
+    fetch(`/admin/update-product/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert('Produs actualizat cu succes!');
+                // Actualizăm celulele cu valorile noi
+                inputs.forEach((input, index) => {
+                    row.cells[index + 1].innerHTML = input.value;
+                });
+                row.querySelector('select').style.display = 'none';
+                row.querySelector('span').textContent = select.value;
+                row.querySelector('span').style.display = 'inline-block';
+
+                row.querySelector('.edit-button').style.display = 'inline-block';
+                row.querySelector('.save-button').style.display = 'none';
+            } else {
+                alert('Eroare la actualizarea produsului.');
+            }
+        })
+        .catch(() => {
+            alert('A apărut o eroare la conexiune.');
+        });
+}
+
+        });
+    </script>
+            <footer>
+                <p>&copy; 2025 Dor de Gust. Toate drepturile rezervate.</p>
+            </footer>
+</body>
+</html>

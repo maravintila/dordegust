@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-overlay {
+            /*background-color: rgba(0, 0, 0, 0.6); */
+            padding: 50px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .hero-overlay h1 {
+            font-family: 'Pattaya', Arial, sans-serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #FEDCDB;
+        }
+
+        .hero-overlay p {
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--inghetata-capsuni);
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: var(--miere);
+        }
+
+        .about {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: white;
+    margin-top: 20px;
+}
+
+.about-content {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Spațiu între imagine și text */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-image img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+}
+
+.about-image img.animate {
+    opacity: 1;
+}
+
+.about-text {
+    max-width: 600px;
+    text-align: center; /* Centrare text */
+    margin-left: auto; /* Împinge textul spre dreapta */
+    padding-left: 50px; /* Adaugă spațiu suplimentar în dreapta */
+}
+
+.about h2 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 36px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 20px;
+}
+
+.about p {
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 18px;
+    color: var(--ciocolata-neagra);
+    line-height: 1.6;
+}
+
+
+        .categories {
+            padding: 50px 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .categories h2 {
+            font-family: 'Pattaya', Arial, sans-serif;
+            font-size: 36px;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 30px;
+        }
+
+        .category-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background-color: var(--roz-glazurat);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            flex: 1 1 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-card img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .category-card h3 {
+            font-family: 'Lato Bold', Arial, sans-serif;
+            font-size: 18px;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 10px;
+        }
+
+        .category-card p {
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 16px;
+            color: var(--ciocolata-neagra);
+            line-height: 1.5;
+        }
+
+        .categories {
+    padding: 50px 20px;
+    background-color: var(--roz-glazurat);
+    text-align: center;
+}
+
+.categories h1 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 36px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 30px;
+}
+
+.category-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.category-item {
+    flex: 1;
+    text-align: center;
+}
+
+.category-item img {
+    width: 100%; /* Poza ocupă lățimea secțiunii */
+    max-height: 300px; /* Înălțime maximă consistentă */
+    object-fit: cover; /* Imagine ajustată proporțional */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.category-item h3 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 24px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 10px;
+}
+
+.category-item p {
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 16px;
+    color: var(--ciocolata-neagra);
+    line-height: 1.6;
+}
+.category-item:first-child {
+    transform: translateY(40px); /* Coborâm primul element */
+}
+
+.category-item:last-child {
+    transform: translateY(40px); /* Coborâm ultimul element */
+}
+.logo-svg img {
+    width: 450px; /* Ajustează dimensiunea în funcție de nevoi */
+    height: auto;
+    display: block;
+    margin: 0 auto 20px; /* Centrează logo-ul și adaugă spațiu dedesubt */
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="/">Dor de gust</a></div>
+        <nav>
+            <ul>
+                <li><a href="#about">Despre Noi</a></li>
+                <li><a href="#bunatati">Bunatati</a></li>
+                <li><a href="/products">Produse</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-overlay">
+                <div class="logo-svg">
+                    <img src="/static/images/Asset 1.svg" alt="Logo Dor de Gust">
+                </div>
+                <!--<p>Descoperă gustul copilăriei în deserturile noastre autentice.</p>-->
+                <a href="/products" class="cta-button">Vezi Produsele</a>
+            </div>
+            <div class="scroll-element" id="decor1">
+                <img src="/static/images/decor1.png" alt="Decor 1">
+            </div>
+            <div class="scroll-element" id="decor2">
+                <img src="/static/images/decor2.png" alt="Decor 1">
+            </div>
+            <div class="scroll-element" id="decor3">
+                <img src="/static/images/decor3.png" alt="Decor 1">
+            </div>
+            <!--<div class="animated-element">
+                <img src="/static/images/decor2.png" alt="Decor 2">
+            </div>
+            <div class="animated-element">
+                <img src="/static/images/decor3.png" alt="Decor 3">
+            </div>-->
+        </section>
+        
+
+        <!-- Despre Noi -->
+        <section class="about" id="about">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="/static/images/about2.jpg" alt="Desert delicios">
+                </div>
+                <div class="about-text">
+                    <h2>Despre Noi</h2>
+                    <p>
+                        La Dor de Gust, creăm deserturi care îți aduc aminte de cele mai dulci momente. Folosim doar ingrediente naturale și rețete tradiționale, pregătite cu grijă și pasiune.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+
+        <!-- Categorii de Produse -->
+        <section class="categories" id="bunatati">
+            <h1>Ce poți găsi la noi</h1>
+            <div class="category-container">
+                <div class="category-item">
+                    <img src="/static/images/tort.jpeg" alt="Torturi">
+                    <h3>Torturi</h3>
+                    <p>Pâine albă, Pâine integrală, Chifle, Bruschete, Crutoane, Pesmet măcinat.</p>
+                </div>
+                <div class="category-item">
+                    <img src="/static/images/prajitura.jpeg" alt="Patiserie">
+                    <h3>Prajituri</h3>
+                    <p>Chec marmorat, Cozonaci, Brioșe, Strudele, Șuberec, Sarailii.</p>
+                </div>
+                <div class="category-item">
+                    <img src="/static/images/patiserie.jpeg" alt="Cofetărie">
+                    <h3>Patiserie</h3>
+                    <p>Torturi, Prăjituri, Macarons, Fursecuri, Candy bar.</p>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <!-- Secțiunea de navigație rapidă -->
+            <div class="footer-nav">
+                <h3>Linkuri Rapide</h3>
+                <ul>
+                    <li><a href="#about">Despre Noi</a></li>
+                    <li><a href="/products">Produse</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="/termeni-si-conditii">Termeni și Condiții</a></li>
+                </ul>
+            </div>
+    
+            <!-- Secțiunea de contact -->
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p>Strada Exemplu, Nr. 123, București</p>
+                <p><a href="tel:+40712345678">+40 712 345 678</a></p>
+                <p><a href="mailto:contact@dordegust.ro">contact@dordegust.ro</a></p>
+            </div>
+    
+            <!-- Secțiunea socială -->
+            <div class="social-icons">
+                <h3>Urmărește-ne</h3>
+                <div class="icons-container">
+                <a href="https://facebook.com" target="_blank" class="circle-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank" class="circle-icon"><i class="fab fa-instagram"></i></a>
+</div>
+            </div>
+        </div>
+    
+        <!-- Copyright -->
+        <p class="footer-copyright">
+            &copy; 2025 Dor de Gust. Toate drepturile rezervate. | 
+            <a href="/politica-confidentialitate">Politica de Confidențialitate</a>
+        </p>
+    </footer>
+    
+    <script>
+        document.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const hero = document.querySelector('.hero');
+            const heroMidpoint = hero.offsetHeight / 2;
+    
+            // Mișcare pentru primul element
+            const decor1 = document.querySelector('#decor1');
+            decor1.style.transform = `translate(${scrollY * 0.4}px, ${scrollY * 0.5}px) rotate(${scrollY * 0.1}deg)`;
+    
+            // Mișcare pentru al doilea element
+            const decor2 = document.querySelector('#decor2');
+            decor2.style.transform = `translate(${scrollY * -0.2}px, ${scrollY * 0.4}px) rotate(${scrollY * -0.1}deg)`;
+            if (scrollY <= heroMidpoint) {
+            const decor3 = document.querySelector('#decor3');
+            decor3.style.transform = `translate(${scrollY * 0.1}px, ${scrollY * 0.6}px) rotate(${scrollY * 0.15}deg)`;
+            }
+        });
+    </script>
+    
+</body>
+</html>

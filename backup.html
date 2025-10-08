@@ -1,0 +1,531 @@
+
+    <!-- index -->
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dor de Gust</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo"><a href="/">Dor de Gust</a></div>
+        <nav>
+            <ul>
+                <li><a href="#about">Despre Noi</a></li>
+                <li><a href="#popular-products">Produse Populare</a></li>
+                <li><a href="/products">Produse</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay">
+            <h1>Bun venit la Dor de Gust!</h1>
+            <p>Descoperă gustul copilăriei în deserturile noastre.</p>
+            <a href="/products" class="cta-button">Vezi Produsele</a>
+        </div>
+        <div class="squiggles">
+            <img src="static/images/squiggle.png" alt="Squiggles">
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="about-container">
+            <div class="about-image">
+                <img src="static/images/logo.svg" alt="Dor de Gust">
+            </div>
+            <div class="about-text">
+                <h2>Despre Noi</h2>
+                <p>
+                    La Dor de Gust, ne dedicăm să aducem bucuria deserturilor tradiționale direct pe mesele voastre. Fiecare produs este realizat cu pasiune, folosind ingrediente naturale și rețete autentice.
+                </p>
+                <p>
+                    De la prăjituri savuroase la torturi spectaculoase, fiecare desert spune o poveste despre grijă și dedicare. Descoperă gustul copilăriei în fiecare bucățică!
+                </p>
+            </div>
+        </div>
+
+    </section>
+    
+
+    <!-- Produse Populare Section -->
+    <section id="popular-products">
+        <h2>Produse Populare</h2>
+        <div class="product-grid">
+            <div class="product-item">
+                <img src="static/images/tort_ciocolata.jpg" alt="Tort Ciocolată">
+                <h3>Tort Ciocolată</h3>
+                <p>120 RON</p>
+                <a href="/products">Vezi detalii</a>
+            </div>
+            <div class="product-item">
+                <img src="static/images/cheesecake.jpg" alt="Cheesecake">
+                <h3>Cheesecake</h3>
+                <p>90 RON</p>
+                <a href="/products">Vezi detalii</a>
+            </div>
+            <div class="product-item">
+                <img src="static/images/tarta_fructe.jpg" alt="Tartă cu Fructe">
+                <h3>Tartă cu Fructe</h3>
+                <p>70 RON</p>
+                <a href="/products">Vezi detalii</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Dor de Gust. Toate drepturile rezervate.</p>
+        <div class="social-icons">
+            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+    </footer>
+
+    <!-- Flask Integration -->
+    <script>
+        /* Exemplu pentru integrare dinamică Flask */
+        fetch('/api/products')
+            .then(response => response.json())
+            .then(data => {
+                const productGrid = document.querySelector('.product-grid');
+                productGrid.innerHTML = '';
+                data.forEach(product => {
+                    productGrid.innerHTML += `
+                        <div class="product-item">
+                            <img src="${product.imagine}" alt="${product.nume}">
+                            <h3>${product.nume}</h3>
+                            <p>${product.pret} RON</p>
+                            <a href="/products/${product.id}">Vezi detalii</a>
+                        </div>`;
+                });
+            });
+    </script>
+</body>
+</html>
+
+<!-- Main page cu hero macarons -->
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero {
+            position: relative;
+            background-image: url('/static/images/bkg.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .hero-overlay {
+            /*background-color: rgba(0, 0, 0, 0.6); */
+            padding: 50px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .hero-overlay h1 {
+            font-family: 'Pattaya', Arial, sans-serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #FEDCDB;
+        }
+
+        .hero-overlay p {
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--inghetata-capsuni);
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: var(--miere);
+        }
+
+        .about {
+            padding: 50px 20px;
+            text-align: center;
+            background-color: white;;
+        }
+
+        .about h2 {
+            font-family: 'Pattaya', Arial, sans-serif;
+            font-size: 36px;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 20px;
+        }
+
+        .about p {
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 18px;
+            color: var(--ciocolata-neagra);
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .categories {
+            padding: 50px 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .categories h2 {
+            font-family: 'Pattaya', Arial, sans-serif;
+            font-size: 36px;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 30px;
+        }
+
+        .category-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background-color: var(--roz-glazurat);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            flex: 1 1 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-card img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .category-card h3 {
+            font-family: 'Lato Bold', Arial, sans-serif;
+            font-size: 18px;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 10px;
+        }
+
+        .category-card p {
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 16px;
+            color: var(--ciocolata-neagra);
+            line-height: 1.5;
+        }
+
+        .categories {
+    padding: 50px 20px;
+    background-color: var(--roz-glazurat);
+    text-align: center;
+}
+
+.categories h1 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 36px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 30px;
+}
+
+.category-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.category-item {
+    flex: 1;
+    text-align: center;
+}
+
+.category-item img {
+    width: 100%; /* Poza ocupă lățimea secțiunii */
+    max-height: 300px; /* Înălțime maximă consistentă */
+    object-fit: cover; /* Imagine ajustată proporțional */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.category-item h3 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 24px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 10px;
+}
+
+.category-item p {
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 16px;
+    color: var(--ciocolata-neagra);
+    line-height: 1.6;
+}
+.category-item:first-child {
+    transform: translateY(40px); /* Coborâm primul element */
+}
+
+.category-item:last-child {
+    transform: translateY(40px); /* Coborâm ultimul element */
+}
+.logo-svg img {
+    width: 450px; /* Ajustează dimensiunea în funcție de nevoi */
+    height: auto;
+    display: block;
+    margin: 0 auto 20px; /* Centrează logo-ul și adaugă spațiu dedesubt */
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="/">Dor de Gust</a></div>
+        <nav>
+            <ul>
+                <li><a href="#about">Despre Noi</a></li>
+                <li><a href="#bunatati">Bunatati</a></li>
+                <li><a href="/products">Produse</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-overlay">
+                <div class="logo-svg">
+                    <img src="/static/images/logo_extins.svg" alt="Logo Dor de Gust">
+                </div>
+                <!--<p>Descoperă gustul copilăriei în deserturile noastre autentice.</p>-->
+                <a href="/products" class="cta-button">Vezi Produsele</a>
+            </div>
+        </section>
+        
+
+        <!-- Despre Noi -->
+        <section class="about" id="about">
+            <h2>Despre Noi</h2>
+            <p>
+                La Dor de Gust, creăm deserturi care îți aduc aminte de cele mai dulci momente. Folosim doar ingrediente naturale și rețete tradiționale, pregătite cu grijă și pasiune.
+            </p>
+        </section>
+
+        <!-- Categorii de Produse -->
+        <section class="categories" id="bunatati">
+            <h1>Ce poți găsi la noi</h1>
+            <div class="category-container">
+                <div class="category-item">
+                    <img src="/static/images/tort.jpeg" alt="Torturi">
+                    <h3>Torturi</h3>
+                    <p>Pâine albă, Pâine integrală, Chifle, Bruschete, Crutoane, Pesmet măcinat.</p>
+                </div>
+                <div class="category-item">
+                    <img src="/static/images/prajitura.jpeg" alt="Patiserie">
+                    <h3>Prajituri</h3>
+                    <p>Chec marmorat, Cozonaci, Brioșe, Strudele, Șuberec, Sarailii.</p>
+                </div>
+                <div class="category-item">
+                    <img src="/static/images/patiserie.jpeg" alt="Cofetărie">
+                    <h3>Patiserie</h3>
+                    <p>Torturi, Prăjituri, Macarons, Fursecuri, Candy bar.</p>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer>
+        <div class="social-icons">
+            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p>&copy; 2025 Dor de Gust. Toate drepturile rezervate.</p>
+
+    </footer>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ produs['nume'] }}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        .product-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin: 60px auto;
+            max-width: 1200px;
+            align-items: flex-start;
+            padding: 0 20px;
+        }
+
+        .product-image {
+            flex: 1 1 40%;
+            max-width: 40%;
+            position: relative;
+        }
+
+        .product-image .back-button {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            background-color: var(--roz-glazurat);
+            color: var(--ciocolata-neagra);
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .product-image .back-button:hover {
+            background-color: var(--inghetata-capsuni);
+            color: white;
+        }
+
+        .product-image img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-info {
+            flex: 1 1 55%;
+            max-width: 55%;
+            text-align: left;
+        }
+
+        .product-info h1 {
+            font-family: 'Pattaya', Arial, sans-serif;
+            font-size: 36px;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 20px;
+        }
+
+        .product-info p {
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 15px;
+        }
+
+        .product-info .price {
+            font-family: 'Lato Bold', Arial, sans-serif;
+            font-size: 24px;
+            color: var(--inghetata-capsuni);
+            margin-bottom: 20px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .product-details {
+                flex-direction: column;
+                padding: 0 15px;
+            }
+
+            .product-image {
+                max-width: 100%;
+            }
+
+            .product-info {
+                max-width: 100%;
+            }
+
+            .product-image .back-button {
+                top: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="/">Dor de Gust</a></div>
+        <nav>
+            <ul>
+                <li><a href="/">Acasă</a></li>
+                <li><a href="/products">Produse</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="product-details">
+            <div class="product-image">
+                <a href="/products" class="back-button">&larr; Înapoi la Produse</a>
+                <img src="{{ produs['imagine'] }}" alt="{{ produs['nume'] }}">
+            </div>
+
+            <div class="product-info">
+                <h1>{{ produs['nume'] }}</h1>
+                <p class="price">{{ produs['pret'] }} RON</p>
+                <p>{{ produs['descriere'] }}</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Dor de Gust. Toate drepturile rezervate.</p>
+    </footer>
+</body>
+</html>
+
+
+            <!-- Contact Section -->
+            <section id="contact" class="contact-section">
+                <h2>Contactează-ne</h2>
+                <form class="contact-form" action="#" method="post">
+                    <label for="name">Nume</label>
+                    <input type="text" id="name" name="name" required>
+        
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+        
+                    <label for="message">Mesaj</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+        
+                    <button type="submit">Trimite</button>
+                </form>
+            </section>

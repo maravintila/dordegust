@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Adaugă Produs</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Panou Admin</h1>
+        <nav>
+            <ul>
+                <li><a href="/admin">Adauga</a></li>
+                <li><a href="/admin/edit-products">Editeaza</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="admin-form">
+            <h2>Adaugă un Produs</h2>
+            <form action="/admin/add-product" method="POST">
+                <label for="nume">Nume Produs:</label>
+                <input type="text" id="nume" name="nume" required>
+
+                <label for="descriere">Descriere:</label>
+                <textarea id="descriere" name="descriere" rows="4" required></textarea>
+
+                <label for="pret">Preț:</label>
+                <input type="number" id="pret" name="pret" step="0.01" required>
+
+                <label for="imagine">URL Imagine:</label>
+                <input type="text" id="imagine" name="imagine" required>
+
+                <label for="ingrediente">Ingrediente:</label>
+                <input type="text" id="ingrediente" name="ingrediente" required>
+
+                <label for="categorie">Categorie:</label>
+                <select id="categorie" name="categorie" required>
+                    <option value="" disabled selected>Selectează o categorie</option>
+                    {% for category in categories %}
+                    <option value="{{ category['categorie'] }}">{{ category['categorie'] }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Adaugă Produs</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Dor de Gust. Toate drepturile rezervate.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ produs['nume'] }}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+       .product-details {
+    display: flex;
+    gap: 40px;
+    margin: 60px auto;
+    max-width: 1200px;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: var(--roz-glazurat);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 15px;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 16px;
+    color: var(--ciocolata-neagra);
+    text-decoration: none;
+    background-color: var(--roz-glazurat);
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+    background-color: var(--ciocolata-neagra);
+    color: var(--roz-glazurat);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.product-image {
+    position: relative;
+    flex: 1 1 40%;
+    max-width: 40%;
+}
+
+.product-image img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.product-info {
+    flex: 1 1 55%;
+    max-width: 55%;
+    text-align: left;
+    padding: 20px;
+}
+
+.product-info h1 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 36px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 20px;
+}
+
+.product-info .price {
+    font-family: 'Lato Bold', Arial, sans-serif;
+    font-size: 24px;
+    color: var(--inghetata-capsuni);
+    margin-bottom: 20px;
+}
+
+.product-info p {
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 15px;
+}
+
+.product-ingredients {
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid var(--caramel);
+}
+
+.product-ingredients h3 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 20px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 10px;
+}
+
+.product-ingredients p {
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 16px;
+    color: var(--ciocolata-neagra);
+    line-height: 1.5;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="/">Dor de Gust</a></div>
+        <nav>
+            <ul>
+                <li><a href="/">Acasă</a></li>
+                <li><a href="/products">Produse</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="product-details">
+            <div class="product-image">
+                <a href="/products" class="back-button">&larr; Înapoi la Produse</a>
+                <img src="{{ produs['imagine'] }}" alt="{{ produs['nume'] }}">
+            </div>
+    
+            <div class="product-info">
+                <h1>{{ produs['nume'] }}</h1>
+                <p class="price">{{ produs['pret'] }} RON</p>
+                <p>{{ produs['descriere'] }}</p>
+    
+                <div class="product-ingredients">
+                    <h3>Ingrediente:</h3>
+                    <p>{{ produs['ingrediente'] }}</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+
+    <footer>
+        <div class="footer-container">
+            <!-- Secțiunea de navigație rapidă -->
+            <div class="footer-nav">
+                <h3>Linkuri Rapide</h3>
+                <ul>
+                    <li><a href="#about">Despre Noi</a></li>
+                    <li><a href="/products">Produse</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="/termeni-si-conditii">Termeni și Condiții</a></li>
+                </ul>
+            </div>
+    
+            <!-- Secțiunea de contact -->
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p>Strada Exemplu, Nr. 123, București</p>
+                <p><a href="tel:+40712345678">+40 712 345 678</a></p>
+                <p><a href="mailto:contact@dordegust.ro">contact@dordegust.ro</a></p>
+            </div>
+    
+            <!-- Secțiunea socială -->
+            <div class="social-icons">
+                <h3>Urmărește-ne</h3>
+                <div class="icons-container">
+                <a href="https://facebook.com" target="_blank" class="circle-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank" class="circle-icon"><i class="fab fa-instagram"></i></a>
+</div>
+            </div>
+        </div>
+    
+        <!-- Copyright -->
+        <p class="footer-copyright">
+            &copy; 2025 Dor de Gust. Toate drepturile rezervate. | 
+            <a href="/politica-confidentialitate">Politica de Confidențialitate</a>
+        </p>
+    </footer>
+</body>
+</html>

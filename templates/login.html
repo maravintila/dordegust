@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autentificare Admin</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="login-form">
+        <h2>Autentificare Admin</h2>
+        <form action="/login" method="POST">
+            <label for="username">Utilizator:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Parolă:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Autentificare</button>
+        </form>
+        {% if message %}
+        <p class="error">{{ message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

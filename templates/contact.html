@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+    .contact-section {
+        padding: 50px 20px;
+        background-color: #fff;
+    }
+    
+    .contact-form label {
+        font-family: 'Lato', Arial, sans-serif;
+        font-size: 14px;
+        color: var(--ciocolata-neagra);
+    }
+    
+
+.contact-form button:hover {
+    background-color: var(--ciocolata-neagra);
+}
+
+    
+    
+    .contact-info h3 {
+        font-family: 'Pattaya', Arial, sans-serif;
+        font-size: 24px;
+        color: var(--ciocolata-neagra);
+    }
+    
+    .contact-info p {
+        font-family: 'Lato', Arial, sans-serif;
+        font-size: 16px;
+        color: var(--ciocolata-neagra);
+    }
+    
+    .map-container iframe {
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .form-container h2 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 32px;
+    color: var(--ciocolata-neagra);
+    text-align: center; /* Centrează titlul în cadrul coloanei formularului */
+    margin-bottom: 20px;
+}
+.contact-section h2 {
+    text-align: center;
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 36px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 30px;
+}
+
+.contact-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-content: space-between; /* Spațiu între formular și informații */
+}
+
+.contact-form-container {
+    flex: 1 1 48%; /* Formularul ocupă 48% din lățime */
+    text-align: left;
+}
+
+.contact-form-container h2 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 32px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 20px; /* Distanță între titlu și formular */
+    text-align: center; /* Centrează titlul doar în cadrul formularului */
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spațiu între elementele din formular */
+}
+
+.contact-form input,
+.contact-form textarea {
+    padding: 10px;
+    border: 1px solid var(--caramel);
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box; /* Include padding-ul în dimensiune */
+}
+
+.contact-form button {
+    background-color: var(--inghetata-capsuni);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.contact-info {
+    flex: 1 1 48%; /* Informațiile ocupă 48% din lățime */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+.map-container iframe {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive pentru ecrane mici */
+@media (max-width: 768px) {
+    .contact-container {
+        flex-direction: column; /* Coloanele devin verticale */
+    }
+
+    .contact-form-container,
+    .contact-info {
+        flex: 1 1 100%; /* Fiecare secțiune ocupă 100% din lățime */
+    }
+}
+
+
+    </style>
+
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="/">Dor de Gust</a></div>
+        <nav>
+            <ul>
+                <li><a href="/">Acasă</a></li>
+                <li><a href="/products">Produse</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+            <!-- Contact Section -->
+            <section id="contact" class="contact-section">
+                <div class="contact-container">
+                    <!-- Formularul de contact -->
+                    <div class="contact-form-container">
+                        <h2>Contactează-ne</h2>
+                        <form class="contact-form" action="#" method="post">
+                            <label for="name">Nume</label>
+                            <input type="text" id="name" name="name" required>
+            
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+            
+                            <label for="message">Mesaj</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+            
+                            <button type="submit">Trimite</button>
+                        </form>
+                    </div>
+            
+                    <!-- Informații de contact și locație -->
+                    <div class="contact-info">
+                        <h3>Informații de Contact</h3>
+                        <p><strong>Adresă:</strong> Strada Exemplu, Nr. 123, București</p>
+                        <p><strong>Telefon:</strong> <a href="tel:+40712345678">+40 712 345 678</a></p>
+                        <p><strong>Email:</strong> <a href="mailto:contact@dordegust.ro">contact@dordegust.ro</a></p>
+            
+                        <!-- Google Maps -->
+                        <div class="map-container">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2544.1523125218873!2d27.962690575925826!3d45.28133937107153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b7293cb4e89367%3A0x72aa1b5c49032d32!2sCofetaria%20%22Dor%20de%20Gust%22!5e1!3m2!1sen!2sro!4v1737824003816!5m2!1sen!2sro" 
+                            width="100%" 
+                    height="250" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <!-- Secțiunea de navigație rapidă -->
+            <div class="footer-nav">
+                <h3>Linkuri Rapide</h3>
+                <ul>
+                    <li><a href="#about">Despre Noi</a></li>
+                    <li><a href="/products">Produse</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="/termeni-si-conditii">Termeni și Condiții</a></li>
+                </ul>
+            </div>
+    
+            <!-- Secțiunea de contact -->
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p>Strada Exemplu, Nr. 123, București</p>
+                <p><a href="tel:+40712345678">+40 712 345 678</a></p>
+                <p><a href="mailto:contact@dordegust.ro">contact@dordegust.ro</a></p>
+            </div>
+    
+            <!-- Secțiunea socială -->
+            <div class="social-icons">
+                <h3>Urmărește-ne</h3>
+                <div class="icons-container">
+                <a href="https://facebook.com" target="_blank" class="circle-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank" class="circle-icon"><i class="fab fa-instagram"></i></a>
+</div>
+            </div>
+        </div>
+    
+        <!-- Copyright -->
+        <p class="footer-copyright">
+            &copy; 2025 Dor de Gust. Toate drepturile rezervate. | 
+            <a href="/politica-confidentialitate">Politica de Confidențialitate</a>
+        </p>
+    </footer>
+    
+</body>
+</html>
