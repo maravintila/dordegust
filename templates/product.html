@@ -120,7 +120,7 @@
         <div class="product-details">
             <div class="product-image">
                 <a href="/products" class="back-button">&larr; Înapoi la Produse</a>
-                <img src="{{ produs['imagine'] }}" alt="{{ produs['nume'] }}">
+                <img src="{{ url_for('uploaded_file', filename=produs.imagine) }}" alt="{{ produs.nume }}">
             </div>
     
             <div class="product-info">
