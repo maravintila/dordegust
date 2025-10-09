@@ -146,7 +146,11 @@
                 {% for produs in produse %}
                 <div class="product-item">
                     <a href="/products/{{ produs['id'] }}">
+                        {% if produs['imagine'] %}
                         <img src="{{ url_for('uploaded_file', filename=produs['imagine']) }}" alt="{{ produs['nume'] }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/no-image.png') }}" alt="Fără imagine">
+                    {% endif %}
                         <h3>{{ produs['nume'] }}</h3>
                         <p>{{ produs['pret'] }} RON</p>
                     </a>
