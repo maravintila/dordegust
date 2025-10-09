@@ -5,6 +5,7 @@ import os
 import time
 import uuid
 from werkzeug.utils import secure_filename
+import psycopg2
 
 def login_required(f):
     @wraps(f)
@@ -33,12 +34,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024  # 8 MB
 
 
-# Conectare la baza de date
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
+    database_url = os.getenv('DATABASE_URL')
+    conn = psycopg2.connect(database_url, sslmode='require')
     return conn
-
 
 # Homepage
 @app.route('/')
