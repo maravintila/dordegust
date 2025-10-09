@@ -1,0 +1,45 @@
+/* rulează doar pe ecrane mici */
+@media (max-width: 768px) {
+
+    /* HEADER + MENIU */
+    header { flex-wrap: wrap; padding: 10px 15px !important; }
+    header .hamburger { display: block !important; font-size: 28px; cursor: pointer; z-index: 1001; }
+    header nav { width: 100%; position: relative; }
+    header nav ul {
+      display: none !important;                 /* ascuns by default pe mobil */
+      flex-direction: column !important;
+      align-items: center !important;
+      position: absolute; top: 100%; left: 0; width: 100%;
+      background: var(--inghetata-capsuni); padding: 10px 0; z-index: 1000;
+    }
+    header nav ul.show { display: flex !important; }
+    header nav ul li { margin: 10px 0 !important; }
+    header .logo a { font-size: 36px !important; }
+  
+    /* HERO */
+    .hero { height: auto !important; padding: 40px 16px !important; text-align: center !important; }
+    .hero-overlay { padding: 24px !important; }
+    .hero-overlay h1 { font-size: 28px !important; }
+    .hero-overlay p { font-size: 16px !important; }
+    .logo-svg img { width: 220px !important; height: auto; }
+    .scroll-element { display: none !important; }  /* ascunde decorațiile care taie conținutul */
+  
+    /* DESPRE NOI */
+    .about { padding: 32px 16px !important; }
+    .about-content { flex-direction: column !important; gap: 16px !important; text-align: center !important; }
+    .about-text { margin-left: 0 !important; padding-left: 0 !important; max-width: 100% !important; }
+    .about-image img { max-width: 320px !important; }
+  
+    /* CATEGORII */
+    .categories { padding: 32px 16px !important; }
+    .category-container { flex-direction: column !important; gap: 24px !important; }
+    .category-item { max-width: 100% !important; }
+    .category-item img { max-height: 220px !important; object-fit: cover !important; }
+  
+    /* GRID PRODUSE (în pagini interioare) */
+    .product-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  
+    /* FOOTER */
+    .footer-container { flex-direction: column !important; text-align: center !important; gap: 20px !important; }
+  }
+  
