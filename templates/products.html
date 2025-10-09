@@ -146,7 +146,7 @@
                 {% for produs in produse %}
                 <div class="product-item">
                     <a href="/products/{{ produs['id'] }}">
-                        <img src="{{ produs['imagine'] }}" alt="{{ produs['nume'] }}">
+                        <img src="{{ url_for('uploaded_file', filename=produs['imagine']) }}" alt="{{ produs['nume'] }}">
                         <h3>{{ produs['nume'] }}</h3>
                         <p>{{ produs['pret'] }} RON</p>
                     </a>
@@ -173,17 +173,17 @@
             <!-- Secțiunea de contact -->
             <div class="footer-contact">
                 <h3>Contact</h3>
-                <p>Strada Exemplu, Nr. 123, București</p>
-                <p><a href="tel:+40712345678">+40 712 345 678</a></p>
-                <p><a href="mailto:contact@dordegust.ro">contact@dordegust.ro</a></p>
+                <p>Strada Mihai Bravu 435, Brăila 810055</p>
+                <p><a href="tel:+40724759077">+40724759077</a></p>
+                <p><a href="mailto:fauritoriidegust@gmail.com">fauritoriidegust@gmail.com</a></p>
             </div>
     
             <!-- Secțiunea socială -->
             <div class="social-icons">
                 <h3>Urmărește-ne</h3>
                 <div class="icons-container">
-                <a href="https://facebook.com" target="_blank" class="circle-icon"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://instagram.com" target="_blank" class="circle-icon"><i class="fab fa-instagram"></i></a>
+                <a href="https://facebook.com/dordegustirina" target="_blank" class="circle-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://instagram.com/dordegust" target="_blank" class="circle-icon"><i class="fab fa-instagram"></i></a>
 </div>
             </div>
         </div>
