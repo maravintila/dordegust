@@ -710,13 +710,6 @@ nav ul li a {
     text-decoration: none;
 }
 
-/* HAMBURGER BUTTON */
-.hamburger {
-    display: none;
-    font-size: 26px;
-    cursor: pointer;
-}
-
 /* MOBILE NAVIGATION */
 @media (max-width: 768px) {
     .hamburger {
