@@ -869,3 +869,212 @@ nav ul li a {
     }
 }
 
+/* --- CSS mutat din index.html --- */
+
+        .hero-overlay {
+            /*background-color: rgba(0, 0, 0, 0.6); */
+            padding: 50px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .hero-overlay h1 {
+            font-family: 'Pattaya', Arial, sans-serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #FEDCDB;
+        }
+
+        .hero-overlay p {
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--inghetata-capsuni);
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: var(--miere);
+        }
+
+        .about {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: white;
+    margin-top: 20px;
+}
+
+.about-content {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Spațiu între imagine și text */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-image img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+}
+
+.about-image img.animate {
+    opacity: 1;
+}
+
+.about-text {
+    max-width: 600px;
+    text-align: center; /* Centrare text */
+    margin-left: auto; /* Împinge textul spre dreapta */
+    padding-left: 50px; /* Adaugă spațiu suplimentar în dreapta */
+}
+
+.about h2 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 36px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 20px;
+}
+
+.about p {
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 18px;
+    color: var(--ciocolata-neagra);
+    line-height: 1.6;
+}
+
+
+        .categories {
+            padding: 50px 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .categories h2 {
+            font-family: 'Pattaya', Arial, sans-serif;
+            font-size: 36px;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 30px;
+        }
+
+        .category-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background-color: var(--roz-glazurat);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            flex: 1 1 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-card img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .category-card h3 {
+            font-family: 'Lato Bold', Arial, sans-serif;
+            font-size: 18px;
+            color: var(--ciocolata-neagra);
+            margin-bottom: 10px;
+        }
+
+        .category-card p {
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 16px;
+            color: var(--ciocolata-neagra);
+            line-height: 1.5;
+        }
+
+        .categories {
+    padding: 50px 20px;
+    background-color: var(--roz-glazurat);
+    text-align: center;
+}
+
+.categories h1 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 36px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 30px;
+}
+
+.category-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.category-item {
+    flex: 1;
+    text-align: center;
+}
+
+.category-item img {
+    width: 100%; /* Poza ocupă lățimea secțiunii */
+    max-height: 300px; /* Înălțime maximă consistentă */
+    object-fit: cover; /* Imagine ajustată proporțional */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.category-item h3 {
+    font-family: 'Pattaya', Arial, sans-serif;
+    font-size: 24px;
+    color: var(--ciocolata-neagra);
+    margin-bottom: 10px;
+}
+
+.category-item p {
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 16px;
+    color: var(--ciocolata-neagra);
+    line-height: 1.6;
+}
+.category-item:first-child {
+    transform: translateY(40px); /* Coborâm primul element */
+}
+
+.category-item:last-child {
+    transform: translateY(40px); /* Coborâm ultimul element */
+}
+.logo-svg img {
+    width: 450px; /* Ajustează dimensiunea în funcție de nevoi */
+    height: auto;
+    display: block;
+    margin: 0 auto 20px; /* Centrează logo-ul și adaugă spațiu dedesubt */
+}
+
+
+
