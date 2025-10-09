@@ -145,7 +145,7 @@ def add_product():
             cur.execute('''
             INSERT INTO produse (nume, descriere, pret, imagine, ingrediente, categorie)
             VALUES (%s, %s, %s, %s, %s, %s)
-            ''', (nume, descriere, pret, image_file, ingrediente, categorie))
+            ''', (nume, descriere, pret, image_url, ingrediente, categorie))
         conn.commit()
 
 
