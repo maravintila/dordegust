@@ -1,6 +1,36 @@
 /* rulează doar pe ecrane mici */
 @media (max-width: 768px) {
 
+
+  /* Products page layout */
+  .products-page {
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 0 16px !important;
+    margin-top: 90px !important; /* ca să nu intre sub header-ul fix */
+  }
+
+  .sidebar {
+    width: 100% !important;
+    order: 1 !important;
+    margin: 0 0 10px 0 !important;
+  }
+
+  .products-container {
+    width: 100% !important;
+    order: 2 !important;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr !important; /* 1 pe rând pe mobil */
+    gap: 16px !important;
+    margin: 16px 0 !important;
+  }
+
+  .product-item img {
+    height: 220px !important;
+    object-fit: cover !important;
+  }
     /* HEADER + MENIU */
     header { flex-wrap: wrap; padding: 10px 15px !important; }
     header .hamburger { display: block !important; font-size: 28px; cursor: pointer; z-index: 1001; }
@@ -42,4 +72,5 @@
     /* FOOTER */
     .footer-container { flex-direction: column !important; text-align: center !important; gap: 20px !important; }
   }
+
   
