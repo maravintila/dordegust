@@ -776,16 +776,9 @@ nav ul li a {
 }
 
 /* ✅ FIXURI PENTRU MOBIL (pus la final in styles.css) */
-.hamburger {
-    display: none;
-}
+
 
 @media (max-width: 768px) {
-    .hamburger {
-        display: block;
-        font-size: 28px;
-        cursor: pointer;
-    }
 
     nav ul {
         flex-direction: column;

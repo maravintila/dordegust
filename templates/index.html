@@ -221,7 +221,6 @@
 <body>
     <header>
         <div class="logo"><a href="/">Dor de gust</a></div>
-        <div class="hamburger" onclick="toggleMenu()">☰</div>
         <nav>
             <ul>
                 <li><a href="#about">Despre Noi</a></li>
@@ -356,16 +355,6 @@
             decor3.style.transform = `translate(${scrollY * 0.1}px, ${scrollY * 0.6}px) rotate(${scrollY * 0.15}deg)`;
             }
         });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-    const menu = document.querySelector("nav ul");
-    const hamburger = document.querySelector(".hamburger");
-
-    hamburger.addEventListener("click", function () {
-        menu.classList.toggle("show");
-    });
-});
     </script>
     
 </body>
