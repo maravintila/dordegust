@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact</title>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/mobile.css" media="(max-width: 768px)">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
     .contact-section {
@@ -137,6 +138,7 @@
 <body>
     <header>
         <div class="logo"><a href="/">Dor de Gust</a></div>
+        <div class="hamburger" aria-label="Menu" aria-expanded="false">☰</div>
         <nav>
             <ul>
                 <li><a href="/">Acasă</a></li>
@@ -226,6 +228,18 @@
             <a href="/politica-confidentialitate">Politica de Confidențialitate</a>
         </p>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const burger = document.querySelector('.hamburger');
+          const menu = document.querySelector('header nav ul');
+          if (!burger || !menu) return;
+          burger.addEventListener('click', () => {
+            menu.classList.toggle('show');
+            burger.setAttribute('aria-expanded', menu.classList.contains('show'));
+          });
+        });
+      </script>
+      
     
 </body>
 </html>
