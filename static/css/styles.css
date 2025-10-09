@@ -680,3 +680,61 @@ main {
         margin-bottom: 20px;
     }
 }
+
+/* NAVIGATION BASIC */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f25c66;
+    color: white;
+    position: relative;
+}
+
+.logo {
+    font-family: 'Pacifico', cursive;
+    font-size: 24px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+/* HAMBURGER BUTTON */
+.hamburger {
+    display: none;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+/* MOBILE NAVIGATION */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    nav ul {
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #f25c66;
+        display: none;
+    }
+
+    nav ul.show {
+        display: flex;
+    }
+}
+
