@@ -782,3 +782,90 @@ nav ul li a {
     padding: 0 15px;
 }
 
+/* ✅ FIXURI PENTRU MOBIL (pus la final in styles.css) */
+
+@media (max-width: 768px) {
+    /* Meniul hamburger */
+    .hamburger {
+        display: block;
+        z-index: 9999;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        background-color: var(--inghetata-capsuni);
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        z-index: 9998;
+    }
+
+    nav ul.show {
+        display: flex;
+    }
+
+    /* Fix layout Despre Noi */
+    .about-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    .about-text {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    /* Fix categorii */
+    .category-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .category-item {
+        max-width: 95%;
+    }
+
+    /* Fix logo */
+    .logo a {
+        font-size: 36px;
+    }
+
+    .logo-svg img {
+        width: 200px;
+    }
+
+    /* Ajustare hero */
+    .hero {
+        height: auto;
+        padding: 40px 10px;
+        flex-direction: column;
+    }
+
+    .hero-overlay h1 {
+        font-size: 28px;
+    }
+
+    .hero-overlay p {
+        font-size: 16px;
+    }
+
+    .cta-button {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+
+    /* Footer */
+    footer .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    footer .footer-container > div {
+        margin-bottom: 20px;
+    }
+}
+
