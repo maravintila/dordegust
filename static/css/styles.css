@@ -639,3 +639,6 @@ main {
    /*  opacity: 0.9; Transparență ușoară */
 }
 
+header .hamburger {
+    display: none;
+  }
