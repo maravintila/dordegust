@@ -6,6 +6,11 @@ import time
 import uuid
 from werkzeug.utils import secure_filename
 import psycopg2
+import psycopg2.extras
+
+
+app = Flask(__name__)
+app.secret_key = '1234'
 
 def login_required(f):
     @wraps(f)
@@ -16,35 +21,34 @@ def login_required(f):
     return decorated_function
 
 
-app = Flask(__name__)
-DATABASE = 'database.db'
-app.secret_key = '1234'  # Schimbă cu o cheie unică și sigură
-
-# --- configurație uploads ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 # Alege folderul în funcție de mediu: pe mac/dev folosim folder în proiect, pe server Linux folosește /var/www/...
 if os.getenv('FLASK_ENV') == 'production':
     UPLOAD_FOLDER = '/var/www/dordegust/uploads'
 else:
-    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')  # dev local (mac)
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024  # 8 MB
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 def get_db_connection():
     database_url = os.getenv('DATABASE_URL')
+    # sslmode=require e recomandat pe Render
     conn = psycopg2.connect(database_url, sslmode='require')
     return conn
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Homepage
 @app.route('/')
 def index():
-    conn = get_db_connection()
-    produse_populare = conn.execute('SELECT * FROM produse LIMIT 3').fetchall()
-    conn.close()
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute('SELECT * FROM produse LIMIT 3')
+            produse_populare = cur.fetchall()
     return render_template('index.html', produse_populare=produse_populare)
 
 @app.route('/products')
@@ -52,26 +56,26 @@ def products():
     category = request.args.get('category')
     search = request.args.get('search')
 
-    query = 'SELECT * FROM produse WHERE 1=1'
-    params = []
 
+    base_query = 'SELECT * FROM produse WHERE 1=1'
+    params = []
     if category:
-        query += ' AND categorie = ?'
+        base_query += ' AND categorie = %s'
         params.append(category)
     if search:
-        query += ' AND nume LIKE ?'
-        params.append(f'%{search}%')
+        base_query += ' AND nume ILIKE %s'
+        params.append(f"%{search}%")
 
-    conn = get_db_connection()
 
-    # Obține categoriile distincte
-    categories = conn.execute('SELECT DISTINCT categorie FROM produse').fetchall()
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute('SELECT DISTINCT categorie FROM produse')
+            categories = cur.fetchall()
+            cur.execute(base_query, params)
+            produse = cur.fetchall()
 
-    produse = conn.execute(query, params).fetchall()
-    conn.close()
 
     return render_template('products.html', produse=produse, categories=categories)
-
 
 # Pagina de contact
 @app.route('/contact')
@@ -80,20 +84,23 @@ def contact():
 
 @app.route('/products/<int:product_id>')
 def product_details(product_id):
-    conn = get_db_connection()
-    produs = conn.execute('SELECT * FROM produse WHERE id = ?', (product_id,)).fetchone()
-    conn.close()
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute('SELECT * FROM produse WHERE id = %s', (product_id,))
+            produs = cur.fetchone()
     return render_template('product.html', produs=produs)
 
 @app.route('/admin', methods=['GET'])
 @login_required
 def admin():
-    conn = get_db_connection()
-    categories = conn.execute('SELECT DISTINCT categorie FROM produse').fetchall()
-    conn.close()
-    return render_template('admin.html', categories=categories)
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute('SELECT * FROM produse')
+            produse = cur.fetchall()
+            cur.execute('SELECT DISTINCT categorie FROM produse')
+            categories = cur.fetchall()
+        return render_template('admin.html', produse=produse, categories=categories)
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # creează folderul dacă nu există
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -118,42 +125,23 @@ def add_product():
     image_file = request.files.get('imagine')
     image_filename = None
 
-    if image_file and image_file.filename != '':
-        if not allowed_file(image_file.filename):
-            flash('Tipul fișierului nu este permis')
-            return redirect(request.referrer or url_for('admin'))
-
+    if image_file and allowed_file(image_file.filename):
         original = secure_filename(image_file.filename)
         name, ext = os.path.splitext(original)
-        # folosește uuid pentru unicitate
         new_filename = f"{uuid.uuid4().hex}{ext}"
         save_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
         image_file.save(save_path)
         image_filename = new_filename
 
-    # Dacă vrei, poți valida că nume/pret sunt setate; ex:
-    if not nume or not pret:
-        flash('Nume și preț sunt obligatorii')
-        return redirect(request.referrer or url_for('admin'))
 
-    # INSERT în DB - adaptează la schema ta
-    try:
-        conn = get_db_connection()  # înlocuiește cu funcția ta
-        conn.execute('''
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute('''
             INSERT INTO produse (nume, descriere, pret, imagine, ingrediente, categorie)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (nume, descriere, pret, image_filename, ingrediente, categorie))
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ''', (nume, descriere, pret, image_filename, ingrediente, categorie))
         conn.commit()
-        conn.close()
-    except Exception as e:
-        # dacă DB eșuează șterge fișierul salvat pentru curățenie
-        if image_filename:
-            try:
-                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
-            except Exception:
-                pass
-        flash(f'Eroare la salvarea în baza de date: {e}')
-        return redirect(request.referrer or url_for('admin'))
+
 
     flash('Produs adăugat cu succes!')
     return redirect(url_for('admin'))
@@ -184,10 +172,12 @@ def logout():
 @app.route('/admin/edit-products', methods=['GET'])
 @login_required
 def edit_products():
-    conn = get_db_connection()
-    produse = conn.execute('SELECT * FROM produse').fetchall()
-    categories = conn.execute('SELECT DISTINCT categorie FROM produse').fetchall()
-    conn.close()
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute('SELECT * FROM produse')
+            produse = cur.fetchall()
+            cur.execute('SELECT DISTINCT categorie FROM produse')
+            categories = cur.fetchall()
     return render_template('edit_products.html', produse=produse, categories=categories)
 
 
@@ -195,21 +185,12 @@ def edit_products():
 @app.route('/admin/edit-product/<int:product_id>', methods=['GET'])
 @login_required
 def edit_product(product_id):
-    # Obține conexiunea cu baza de date
-    conn = get_db_connection()
-
-    # Preia detaliile produsului cu ID-ul specificat
-    produs = conn.execute('SELECT * FROM produse WHERE id = ?', (product_id,)).fetchone()
-
-    # Preia categoriile disponibile
-    categories = conn.execute('SELECT DISTINCT categorie FROM produse').fetchall()
-    conn.close()
-
-    # Dacă produsul nu există, returnăm un mesaj de eroare
-    if produs is None:
-        return "Produsul nu a fost găsit.", 404
-
-    # Randăm șablonul de editare cu detaliile produsului
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute('SELECT * FROM produse WHERE id = %s', (product_id,))
+            produs = cur.fetchall()
+            cur.execute('SELECT DISTINCT categorie FROM produse')
+            categories = cur.fetchall()
     return render_template('edit.html', produs=produs, categories=categories)
 
 
@@ -224,20 +205,18 @@ def update_product(product_id):
     ingrediente = data.get('ingrediente')
     categorie = data.get('categorie')
 
-    conn = get_db_connection()
-    conn.execute(
-        'UPDATE produse SET nume = ?, descriere = ?, pret = ?, imagine = ?,ingrediente = ?, categorie = ? WHERE id = ?',
-        (nume, descriere, pret, imagine,ingrediente, categorie, product_id)
-    )
-    conn.commit()
-    conn.close()
-
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                            '''
+                    UPDATE produse
+                    SET nume = %s, descriere = %s, pret = %s, imagine = %s, ingrediente = %s, categorie = %s
+                    WHERE id = %s
+                    ''',
+                (nume, descriere, pret, imagine,ingrediente, categorie, product_id)
+            )
+            conn.commit()
     return {'message': 'Produs actualizat cu succes!'}
-
-
-
-
-
 
 
 if __name__ == "__main__":
