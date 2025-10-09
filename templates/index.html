@@ -358,10 +358,14 @@
         });
     </script>
     <script>
-        function toggleMenu() {
-            const menu = document.querySelector("nav ul");
-            menu.classList.toggle("show");
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+    const menu = document.querySelector("nav ul");
+    const hamburger = document.querySelector(".hamburger");
+
+    hamburger.addEventListener("click", function () {
+        menu.classList.toggle("show");
+    });
+});
     </script>
     
 </body>
