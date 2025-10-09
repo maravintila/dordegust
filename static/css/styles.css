@@ -738,3 +738,47 @@ nav ul li a {
     }
 }
 
+@media (max-width: 768px) {
+    .about-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .about-text {
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .category-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .category-item {
+        max-width: 90%;
+    }
+
+    .hero-overlay h1 {
+        font-size: 32px;
+    }
+
+    .hero-overlay p {
+        font-size: 16px;
+    }
+
+    .logo-svg img {
+        width: 250px;
+    }
+    section {
+        margin-bottom: 40px;
+    }
+    
+}
+
+.hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 0 15px;
+}
+
