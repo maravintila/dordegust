@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 from functools import wraps
+import os
+import time
+import uuid
+from werkzeug.utils import secure_filename
 
 def login_required(f):
     @wraps(f)
@@ -14,6 +18,19 @@ def login_required(f):
 app = Flask(__name__)
 DATABASE = 'database.db'
 app.secret_key = '1234'  # Schimbă cu o cheie unică și sigură
+
+# --- configurație uploads ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Alege folderul în funcție de mediu: pe mac/dev folosim folder în proiect, pe server Linux folosește /var/www/...
+if os.getenv('FLASK_ENV') == 'production':
+    UPLOAD_FOLDER = '/var/www/dordegust/uploads'
+else:
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')  # dev local (mac)
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024  # 8 MB
 
 
 # Conectare la baza de date
@@ -77,22 +94,69 @@ def admin():
     conn.close()
     return render_template('admin.html', categories=categories)
 
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # creează folderul dacă nu există
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Serve images (doar pentru dev). În producție configurează Nginx să servească /uploads/
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=False)
+
+# Handler pentru add-product (form multipart/form-data)
 @app.route('/admin/add-product', methods=['POST'])
+@login_required  # păstrează decoratorul tău de autentificare dacă există
 def add_product():
-    nume = request.form['nume']
-    descriere = request.form['descriere']
-    pret = float(request.form['pret'])
-    imagine = request.form['imagine']
-    categorie = request.form['categorie']
-    ingrediente = request.form['ingrediente']
+    # Obține câmpurile text (form)
+    nume = request.form.get('nume')
+    descriere = request.form.get('descriere')
+    pret = request.form.get('pret')
+    ingrediente = request.form.get('ingrediente')
+    categorie = request.form.get('categorie')
 
-    conn = get_db_connection()
-    conn.execute('INSERT INTO produse (nume, descriere, pret, imagine,ingrediente, categorie) VALUES (?, ?, ?, ?, ?, ?)',
-                 (nume, descriere, pret, imagine,ingrediente, categorie))
-    conn.commit()
-    conn.close()
+    # Verifică imaginea în files
+    image_file = request.files.get('imagine')
+    image_filename = None
 
+    if image_file and image_file.filename != '':
+        if not allowed_file(image_file.filename):
+            flash('Tipul fișierului nu este permis')
+            return redirect(request.referrer or url_for('admin'))
+
+        original = secure_filename(image_file.filename)
+        name, ext = os.path.splitext(original)
+        # folosește uuid pentru unicitate
+        new_filename = f"{uuid.uuid4().hex}{ext}"
+        save_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+        image_file.save(save_path)
+        image_filename = new_filename
+
+    # Dacă vrei, poți valida că nume/pret sunt setate; ex:
+    if not nume or not pret:
+        flash('Nume și preț sunt obligatorii')
+        return redirect(request.referrer or url_for('admin'))
+
+    # INSERT în DB - adaptează la schema ta
+    try:
+        conn = get_db_connection()  # înlocuiește cu funcția ta
+        conn.execute('''
+            INSERT INTO produse (nume, descriere, pret, imagine, ingrediente, categorie)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (nume, descriere, pret, image_filename, ingrediente, categorie))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        # dacă DB eșuează șterge fișierul salvat pentru curățenie
+        if image_filename:
+            try:
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
+            except Exception:
+                pass
+        flash(f'Eroare la salvarea în baza de date: {e}')
+        return redirect(request.referrer or url_for('admin'))
+
+    flash('Produs adăugat cu succes!')
     return redirect(url_for('admin'))
 
 # Credențiale de test (ar trebui să fie în baza de date în realitate)
