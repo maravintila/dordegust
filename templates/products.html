@@ -149,7 +149,7 @@
                 <div class="product-item">
                     <a href="/products/{{ produs['id'] }}">
                         {% if produs['imagine'] %}
-                        <img src="{{ url_for('uploaded_file', filename=produs['imagine']) }}" alt="{{ produs['nume'] }}">
+                        <img src="{{ produs['imagine'] }}" alt="{{ produs['nume'] }}">
                     {% else %}
                         <img src="{{ url_for('static', filename='images/no-image.png') }}" alt="Fără imagine">
                     {% endif %}

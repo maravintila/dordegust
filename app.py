@@ -4,6 +4,8 @@ from functools import wraps
 import os
 import time
 import uuid
+import cloudinary
+import cloudinary.uploader
 from werkzeug.utils import secure_filename
 import psycopg2
 import psycopg2.extras
@@ -11,6 +13,13 @@ import psycopg2.extras
 
 app = Flask(__name__)
 app.secret_key = '1234'
+
+cloudinary.config( 
+  cloud_name = "dqk4wdo4s",  # înlocuiești cu al tău
+  api_key = "523544933926591", 
+  api_secret = "5_RJ6h2gwMl-B34DILPZMt8rHuc",
+  secure = True
+)
 
 def login_required(f):
     @wraps(f)
@@ -121,17 +130,14 @@ def add_product():
     ingrediente = request.form.get('ingrediente')
     categorie = request.form.get('categorie')
 
-    # Verifică imaginea în files
     image_file = request.files.get('imagine')
-    image_filename = None
+    image_url = None
 
     if image_file and allowed_file(image_file.filename):
-        original = secure_filename(image_file.filename)
-        name, ext = os.path.splitext(original)
-        new_filename = f"{uuid.uuid4().hex}{ext}"
-        save_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
-        image_file.save(save_path)
-        image_filename = new_filename
+        # urcă direct în Cloudinary
+        upload_result = cloudinary.uploader.upload(image_file)
+        image_url = upload_result.get("secure_url")
+
 
 
     with get_db_connection() as conn:
@@ -139,7 +145,7 @@ def add_product():
             cur.execute('''
             INSERT INTO produse (nume, descriere, pret, imagine, ingrediente, categorie)
             VALUES (%s, %s, %s, %s, %s, %s)
-            ''', (nume, descriere, pret, image_filename, ingrediente, categorie))
+            ''', (nume, descriere, pret, image_file, ingrediente, categorie))
         conn.commit()
 
 
