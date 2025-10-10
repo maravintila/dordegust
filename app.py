@@ -14,11 +14,11 @@ import psycopg2.extras
 app = Flask(__name__)
 app.secret_key = '1234'
 
-cloudinary.config( 
-  cloud_name = "dqk4wdo4s",  # înlocuiești cu al tău
-  api_key = "523544933926591", 
-  api_secret = "5_RJ6h2gwMl-B34DILPZMt8rHuc",
-  secure = True
+cloudinary.config(
+    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key    = os.getenv("CLOUDINARY_API_KEY"),
+    api_secret = os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
 )
 
 def login_required(f):
@@ -152,9 +152,9 @@ def add_product():
     flash('Produs adăugat cu succes!')
     return redirect(url_for('admin'))
 
-# Credențiale de test (ar trebui să fie în baza de date în realitate)
-USERNAME = 'admin'
-PASSWORD = 'parola123'
+# Credențiale de test
+USERNAME = os.getenv("ADMIN_USERNAME")
+PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
