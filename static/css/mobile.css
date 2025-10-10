@@ -1,6 +1,9 @@
 /* rulează doar pe ecrane mici */
 @media (max-width: 768px) {
 
+    main {
+        padding: 0 !important;
+      }
 
   /* Products page layout */
   .products-page {
@@ -65,12 +68,49 @@
     .category-container { flex-direction: column !important; gap: 24px !important; }
     .category-item { max-width: 100% !important; }
     .category-item img { max-height: 220px !important; object-fit: cover !important; }
+    /* container pe coloană, spațiere clară */
+  .category-container {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important; /* anulează space-between */
+    gap: 24px !important;                   /* spațiu vertical constant */
+    padding: 0 12px !important;
+  }
+
+  /* cardul pe mobil: lățime bună + fără „stagger” */
+  .category-item {
+    width: 100% !important;
+    max-width: 420px !important;   /* arată bine pe 390–430px */
+    transform: none !important;    /* anulează translateY de pe desktop */
+    text-align: center !important;
+  }
+
+  /* imaginea: uniformă, nu „ciupită” */
+  .category-item img {
+    width: 100% !important;
+    height: 220px !important;
+    object-fit: cover !important;
+    margin-bottom: 12px !important;
+    border-radius: 8px !important;
+  }
+
+  /* titlu + descriere mai lizibile */
+  .categories h1 { margin-bottom: 20px !important; }
+  .category-item h3 { margin: 6px 0 4px !important; }
+  .category-item p   { margin: 0 !important; line-height: 1.4 !important; }
   
     /* GRID PRODUSE (în pagini interioare) */
     .product-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
   
     /* FOOTER */
     .footer-container { flex-direction: column !important; text-align: center !important; gap: 20px !important; }
+    .icons-container {
+        justify-content: center !important;
+      }
+    
+      .social-icons {
+        text-align: center !important;
+      }
     /* Layout produs */
   .product-details { 
     flex-direction: column !important; 
