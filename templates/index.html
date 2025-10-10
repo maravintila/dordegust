@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/ddgsubmark.svg') }}">
+    <link rel="canonical" href="https://www.dordegust.ro/">
+    <meta name="description" content="Dor de Gust — prăjituri și torturi făcute în casă, din ingrediente naturale, în Brăila. Medovik, Egiptean, Raffaello, Amandină și multe altele.">
+    <meta name="robots" content="index,follow">
+
+    <meta property="og:title" content="Dor de Gust — Dulciuri de casă">
+    <meta property="og:description" content="Deserturi artizanale cu gust autentic, pregătite cu drag.">
+    <meta property="og:image" content="https://www.dordegust.ro/static/images/og-home.jpeg">
+    <meta property="og:url" content="https://www.dordegust.ro/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/static/css/styles.css">
@@ -369,6 +379,20 @@
             burger.setAttribute('aria-expanded', menu.classList.contains('show'));
           });
         });
-      </script>      
+      </script> 
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Dor de Gust",
+          "url": "https://www.dordegust.ro/",
+          "logo": "https://www.dordegust.ro/static/images/ddgsubmark.svg",
+          "sameAs": [
+            "https://facebook.com/dordegustirina",
+            "https://instagram.com/dordegust"
+          ]
+        }
+        </script>
+             
 </body>
 </html>
