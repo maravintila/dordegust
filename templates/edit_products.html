@@ -117,38 +117,33 @@
             const btn = e.target.closest('button');
             if (!btn) return;
             const row = btn.closest('tr');
-        
-            if (btn.classList.contains('edit-button')) {
-              enableEditMode(row);
-            } else if (btn.classList.contains('save-button')) {
-              saveRow(row);
-            }
+            if (btn.classList.contains('edit-button')) enableEditMode(row);
+            if (btn.classList.contains('save-button')) saveRow(row);
           });
         
           function enableEditMode(row) {
+            // 🔹 Salvăm HTML-ul original ca să putem reveni exact la view.
+            row.dataset.viewHtml = row.innerHTML;
+        
             // coloane: 0 ID | 1 Nume | 2 Descriere | 3 Preț | 4 Imagine | 5 Ingrediente | 6 Categorie | 7 Acțiuni
-            // Memorăm imaginea curentă ca fallback
             const imgCell = row.cells[4];
-            const currentImg = (imgCell.querySelector('img')?.getAttribute('src')
-                                || imgCell.textContent || '').trim();
+            const currentImg =
+              imgCell.querySelector('img')?.getAttribute('src') ||
+              imgCell.textContent.trim();
         
-            row.dataset.currentImage = currentImg; // o folosim la salvare dacă nu alegi alt fișier
+            row.dataset.currentImage = currentImg;
         
-            // Nume
             row.cells[1].innerHTML = `<input type="text" name="nume" value="${row.cells[1].textContent.trim()}">`;
-            // Descriere
             row.cells[2].innerHTML = `<input type="text" name="descriere" value="${row.cells[2].textContent.trim()}">`;
-            // Preț
             row.cells[3].innerHTML = `<input type="number" step="0.01" name="pret" value="${row.cells[3].textContent.trim()}">`;
         
-            // Imagine: thumbnail + input file
             imgCell.innerHTML = `
-              <div class="img-edit" style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
                 ${ currentImg
                     ? `<img class="thumb-preview" src="${currentImg}" alt="Previzualizare" style="width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #eee">`
-                    : `<div class="thumb-preview" style="width:80px;height:80px;border-radius:6px;border:1px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:12px;color:#777">Fără</div>`
+                    : `<div class="thumb-preview" style="width:80px;height:80px;border:1px dashed #ccc;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#777">Fără</div>`
                 }
-                <label class="btn-choose" style="background:#ec4e5d;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer">
+                <label style="background:#ec4e5d;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer">
                   Alege imagine
                   <input type="file" name="imagine" accept="image/*" hidden>
                 </label>
@@ -156,19 +151,12 @@
               </div>
             `;
         
-            // Ingrediente
             row.cells[5].innerHTML = `<input type="text" name="ingrediente" value="${row.cells[5].textContent.trim()}">`;
         
-            // Categorie: arată selectul existent (dacă ai unul acolo) și ascunde span-ul
             const select = row.cells[6].querySelector('select');
             const span = row.cells[6].querySelector('span');
-            if (select && span) {
-              select.style.display = 'inline-block';
-              span.style.display = 'none';
-            } else if (!select) {
-              // fallback: input text dacă n-ai select
-              row.cells[6].innerHTML = `<input type="text" name="categorie" value="${row.cells[6].textContent.trim()}">`;
-            }
+            if (select && span) { select.style.display = 'inline-block'; span.style.display = 'none'; }
+            else if (!select) { row.cells[6].innerHTML = `<input type="text" name="categorie" value="${row.cells[6].textContent.trim()}">`; }
         
             row.querySelector('.edit-button').style.display = 'none';
             row.querySelector('.save-button').style.display = 'inline-block';
@@ -183,51 +171,55 @@
             fd.append('pret',        row.querySelector('input[name="pret"]').value);
             fd.append('ingrediente', row.querySelector('input[name="ingrediente"]').value);
         
-            // categorie fie din select, fie din input fallback
             const select = row.cells[6].querySelector('select');
             const catInput = row.cells[6].querySelector('input[name="categorie"]');
             const categorie = select ? select.value : (catInput ? catInput.value : row.cells[6].textContent.trim());
             fd.append('categorie', categorie);
         
-            // fișier (dacă s-a ales)
             const fileInput = row.querySelector('input[type="file"][name="imagine"]');
             if (fileInput && fileInput.files && fileInput.files[0]) {
               fd.append('imagine', fileInput.files[0]);
             }
-        
-            // fallback dacă nu alegi fișier
             const existingImg = row.dataset.currentImage || '';
         
             try {
-              const resp = await fetch(`/admin/update-product/${productId}`, {
-                method: 'POST',
-                body: fd
-              });
+              const resp = await fetch(`/admin/update-product/${productId}`, { method: 'POST', body: fd });
               if (!resp.ok) throw new Error('Update failed');
               const data = await resp.json();
-        
-              // rescriem celulele cu valori „non-edit”
-              row.cells[1].textContent = fd.get('nume');
-              row.cells[2].textContent = fd.get('descriere');
-              row.cells[3].textContent = fd.get('pret');
-        
-              // Imagine: folosim URL-ul nou dacă a venit, altfel îl păstrăm pe cel vechi
               const finalImg = data.image || existingImg || '';
-              row.cells[4].innerHTML = finalImg
+        
+              // 🔹 Restaurăm EXACT HTML-ul view inițial al rândului
+              const original = row.dataset.viewHtml;
+              if (original) row.innerHTML = original;
+        
+              // 🔹 Acum scriem valorile noi în celulele din view
+              // Re-selectăm celulele după restaurare:
+              const cells = row.cells;
+              cells[1].textContent = fd.get('nume');
+              cells[2].textContent = fd.get('descriere');
+              cells[3].textContent = fd.get('pret');
+        
+              // Imagine: pune exact ce aveai în view (dacă în view afișai text/URL, folosește text; dacă afișai thumbnail, pune img)
+              // — Dacă în tabelul tău „view” era text simplu:
+              // cells[4].textContent = finalImg ? finalImg : 'None';
+        
+              // — Dacă vrei thumbnail și în view:
+              cells[4].innerHTML = finalImg
                 ? `<img src="${finalImg}" alt="Imagine" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #eee">`
                 : `<span style="opacity:.6">None</span>`;
         
-              // Categorie
-              if (select) {
-                row.cells[6].querySelector('span').textContent = categorie;
-                row.cells[6].querySelector('span').style.display = 'inline-block';
-                select.style.display = 'none';
-              } else {
-                row.cells[6].textContent = categorie;
-              }
+              // Categorie (span vizibil, select ascuns)
+              const span = cells[6].querySelector('span');
+              const sel  = cells[6].querySelector('select');
+              if (span) span.textContent = categorie;
+              if (sel)  sel.value = categorie;
         
-              row.querySelector('.edit-button').style.display = 'inline-block';
-              row.querySelector('.save-button').style.display = 'none';
+              // Asigurăm starea butoanelor
+              const editBtn = row.querySelector('.edit-button');
+              const saveBtn = row.querySelector('.save-button');
+              if (editBtn) editBtn.style.display = 'inline-block';
+              if (saveBtn) saveBtn.style.display = 'none';
+        
               alert('Produs actualizat cu succes!');
             } catch (err) {
               console.error(err);
@@ -236,6 +228,7 @@
           }
         });
         </script>
+        
         
             <footer>
                 <p>&copy; 2025 Dor de Gust. Toate drepturile rezervate.</p>
