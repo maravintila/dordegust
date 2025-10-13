@@ -153,11 +153,16 @@
                 {% for produs in produse %}
                 <div class="product-item">
                     <a href="/products/{{ produs['id'] }}">
-                        {% if produs['imagine'] %}
-                        <img src="{{ produs['imagine'] }}" alt="{{ produs['nume'] }}">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='images/no-image.png') }}" alt="Fără imagine">
-                    {% endif %}
+                        {% set img = produs['imagine'] %}
+{% if img %}
+    {% if img.startswith('http://') or img.startswith('https://') %}
+        <img src="{{ img }}" alt="{{ produs['nume'] }}">
+    {% else %}
+        <img src="{{ url_for('uploaded_file', filename=img) }}" alt="{{ produs['nume'] }}">
+    {% endif %}
+{% else %}
+    <img src="{{ url_for('static', filename='images/no-image.png') }}" alt="Fără imagine">
+{% endif %}
                         <h3>{{ produs['nume'] }}</h3>
                         <p>{{ produs['pret'] }} RON</p>
                     </a>

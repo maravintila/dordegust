@@ -200,29 +200,59 @@ def edit_product(product_id):
     return render_template('edit.html', produs=produs, categories=categories)
 
 
-@app.route('/admin/update-product/<int:product_id>', methods=['POST'])
+@app.route('/admin/update-product/<int:pid>', methods=['POST'])
 @login_required
-def update_product(product_id):
-    data = request.get_json()
-    nume = data.get('nume')
-    descriere = data.get('descriere')
-    pret = float(data.get('pret'))
-    imagine = data.get('imagine')
-    ingrediente = data.get('ingrediente')
-    categorie = data.get('categorie')
+def update_product(pid):
+    # Suport atât JSON vechi cât și form-data nou
+    if request.content_type and 'multipart/form-data' in request.content_type:
+        form = request.form
+        file = request.files.get('imagine')
+        nume = form.get('nume')
+        descriere = form.get('descriere')
+        pret = form.get('pret')
+        ingrediente = form.get('ingrediente')
+        categorie = form.get('categorie')
+        new_image_url = None
 
+        # Dacă s-a ales o imagine nouă → urcă în Cloudinary
+        if file and file.filename:
+            upload = cloudinary.uploader.upload(
+                file,
+                folder="dordegust/products"
+            )
+            new_image_url = upload["secure_url"]
+
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                if new_image_url:
+                    cur.execute("""
+                        UPDATE produse
+                        SET nume=%s, descriere=%s, pret=%s, ingrediente=%s, categorie=%s, imagine=%s
+                        WHERE id=%s
+                    """, (nume, descriere, pret, ingrediente, categorie, new_image_url, pid))
+                else:
+                    cur.execute("""
+                        UPDATE produse
+                        SET nume=%s, descriere=%s, pret=%s, ingrediente=%s, categorie=%s
+                        WHERE id=%s
+                    """, (nume, descriere, pret, ingrediente, categorie, pid))
+            conn.commit()
+
+        # Răspundem cu noul URL (dacă există) ca să putem actualiza tabelul la frontend
+        return {"ok": True, "image": new_image_url}, 200
+
+    # fallback: comportamentul vechi pe JSON (dacă încă mai trimiți JSON)
+    data = request.get_json(force=True)
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                            '''
-                    UPDATE produse
-                    SET nume = %s, descriere = %s, pret = %s, imagine = %s, ingrediente = %s, categorie = %s
-                    WHERE id = %s
-                    ''',
-                (nume, descriere, pret, imagine,ingrediente, categorie, product_id)
-            )
-            conn.commit()
-    return {'message': 'Produs actualizat cu succes!'}
+            cur.execute("""
+                UPDATE produse
+                SET nume=%s, descriere=%s, pret=%s, imagine=%s, ingrediente=%s, categorie=%s
+                WHERE id=%s
+            """, (data["nume"], data["descriere"], data["pret"], data["imagine"],
+                  data["ingrediente"], data["categorie"], pid))
+        conn.commit()
+    return {"ok": True}, 200
 
 @app.route('/robots.txt')
 def robots():
