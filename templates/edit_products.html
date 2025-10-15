@@ -65,10 +65,14 @@
         }
         
         textarea {
-          resize: vertical;
-          min-height: 60px;
-          overflow: hidden;
-        }
+            resize: none;
+            overflow: hidden;
+            line-height: 1.4;
+            background: #fffdfd;
+            min-height: 50px;
+            max-height: none;
+            }
+
         
         /* Butoane */
         button {
@@ -200,6 +204,15 @@ small {
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // === AUTO-RESIZE TEXTAREA ===
+            function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+            }
+            document.addEventListener('input', e => {
+            if (e.target.tagName === 'TEXTAREA') autoResize(e.target);
+            });
+
           const table = document.getElementById('products-table');
         
           table.addEventListener('click', (e) => {
@@ -225,6 +238,7 @@ small {
         
             row.cells[1].innerHTML = `<input type="text" name="nume" value="${row.cells[1].textContent.trim()}">`;
             row.cells[2].innerHTML = `<textarea name="descriere">${row.cells[2].textContent.trim()}</textarea>`;
+            autoResize(row.querySelector('textarea[name="descriere"]'));
             row.cells[3].innerHTML = `<input type="number" step="0.01" name="pret" value="${row.cells[3].textContent.trim()}">`;
         
             imgCell.classList.add('image-cell');
@@ -242,10 +256,11 @@ imgCell.innerHTML = `
   </div>
 `;
 
-
-        
             row.cells[5].innerHTML = `<textarea name="ingrediente">${row.cells[5].textContent.trim()}</textarea>`;
+            autoResize(row.querySelector('textarea[name="ingrediente"]'));
+
             row.cells[6].innerHTML = `<textarea name="alergeni">${row.cells[6].textContent.trim()}</textarea>`;
+            autoResize(row.querySelector('textarea[name="alergeni"]'));
         
             const select = row.cells[7].querySelector('select');
             const span = row.cells[7].querySelector('span');
