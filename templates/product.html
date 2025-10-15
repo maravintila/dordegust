@@ -146,9 +146,13 @@
                     <p>{{ produs['ingrediente'] }}</p>
                 </div>
                 {% if produs['alergeni'] %}
-                <div class="alergeni">
-                    <h4>Alergeni:</h4>
-                    <p>{{ produs['alergeni'] }}</p>
+                <div class="alergeni-tags">
+                <h4>Alergeni:</h4>
+                <div class="tags">
+                    {% for a in produs['alergeni'].split(',') %}
+                    <span class="tag">{{ a.strip() }}</span>
+                    {% endfor %}
+                </div>
                 </div>
                 {% endif %}
             </div>

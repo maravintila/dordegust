@@ -643,15 +643,30 @@ header .hamburger {
     display: none;
   }
 
-  .alergeni {
-    margin-top: 10px;
-    font-size: 14px;
-    font-style: italic;
-    color: #7b4a4a;
-    opacity: 0.9;
+  .alergeni-tags {
+    margin-top: 15px;
   }
-  .alergeni strong {
+  
+  .alergeni-tags h4 {
+    margin: 0 0 8px 0;
+    color: var(--ciocolata-neagra);
+    font-family: 'Lato Bold', sans-serif;
+  }
+  
+  .alergeni-tags .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .alergeni-tags .tag {
+    background: #ffeef0;
     color: #a03a3a;
-    font-style: normal;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: 1px solid #f6caca;
+    font-family: 'Lato', sans-serif;
   }
+  
   
