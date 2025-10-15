@@ -283,11 +283,12 @@ imgCell.innerHTML = `
             const productId = row.dataset.id;
         
             const fd = new FormData();
-            fd.append('nume',        row.querySelector('input[name="nume"]').value);
-            fd.append('descriere',   row.querySelector('input[name="descriere"]').value);
-            fd.append('pret',        row.querySelector('input[name="pret"]').value);
+            fd.append('nume', row.querySelector('input[name="nume"]').value);
+            fd.append('descriere', row.querySelector('textarea[name="descriere"]').value);
+            fd.append('pret', row.querySelector('input[name="pret"]').value);
             fd.append('ingrediente', row.querySelector('textarea[name="ingrediente"]').value);
             fd.append('alergeni', row.querySelector('textarea[name="alergeni"]').value);
+
 
 
         
@@ -350,32 +351,6 @@ imgCell.innerHTML = `
             }
           }
         });
-        // Auto-resize pentru textarea-uri
-function autoResizeTextarea(el) {
-  el.style.height = 'auto';
-  el.style.height = el.scrollHeight + 'px';
-}
-
-// activează pe toate textarea-urile create dinamic
-document.addEventListener('input', (e) => {
-  if (e.target.tagName.toLowerCase() === 'textarea') {
-    autoResizeTextarea(e.target);
-  }
-});
-
-// la activare edit-mode: aplicăm imediat pentru cele existente
-function enableEditMode(row) {
-  row.classList.add('editing');
-  row.dataset.viewHtml = row.innerHTML;
-
-  const makeTextarea = (name, value) =>
-    `<textarea name="${name}" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';">${value}</textarea>`;
-
-  row.cells[1].innerHTML = `<input type="text" name="nume" value="${row.cells[1].textContent.trim()}">`;
-  row.cells[2].innerHTML = makeTextarea("descriere", row.cells[2].textContent.trim());
-  row.cells[3].innerHTML = `<input type="number" step="0.01" name="pret" value="${row.cells[3].textContent.trim()}">`;
-  // ... (restul codului tău pentru imagine, ingrediente, etc.)
-}
 
         </script>
         
