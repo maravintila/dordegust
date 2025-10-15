@@ -129,7 +129,7 @@ def add_product():
     pret = request.form.get('pret')
     ingrediente = request.form.get('ingrediente')
     categorie = request.form.get('categorie')
-
+    alergeni = request.form.get('alergeni')
     image_file = request.files.get('imagine')
     image_url = None
 
@@ -143,9 +143,10 @@ def add_product():
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute('''
-            INSERT INTO produse (nume, descriere, pret, imagine, ingrediente, categorie)
-            VALUES (%s, %s, %s, %s, %s, %s)
-            ''', (nume, descriere, pret, image_url, ingrediente, categorie))
+            INSERT INTO produse (nume, descriere, pret, imagine, ingrediente, categorie, alergeni)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ''', (nume, descriere, pret, image_url, ingrediente, categorie, alergeni))
+
         conn.commit()
 
 
@@ -212,6 +213,7 @@ def update_product(pid):
         pret = form.get('pret')
         ingrediente = form.get('ingrediente')
         categorie = form.get('categorie')
+        alergeni = form.get('alergeni')
         new_image_url = None
 
         # Dacă s-a ales o imagine nouă → urcă în Cloudinary
@@ -227,15 +229,15 @@ def update_product(pid):
                 if new_image_url:
                     cur.execute("""
                         UPDATE produse
-                        SET nume=%s, descriere=%s, pret=%s, ingrediente=%s, categorie=%s, imagine=%s
+                        SET nume=%s, descriere=%s, pret=%s, ingrediente=%s, categorie=%s, alergeni=%s, imagine=%s
                         WHERE id=%s
-                    """, (nume, descriere, pret, ingrediente, categorie, new_image_url, pid))
+                    """, (nume, descriere, pret, ingrediente, categorie,alergeni, new_image_url, pid))
                 else:
                     cur.execute("""
                         UPDATE produse
-                        SET nume=%s, descriere=%s, pret=%s, ingrediente=%s, categorie=%s
+                        SET nume=%s, descriere=%s, pret=%s, ingrediente=%s, categorie=%s, alergeni=%s
                         WHERE id=%s
-                    """, (nume, descriere, pret, ingrediente, categorie, pid))
+                    """, (nume, descriere, pret, ingrediente, categorie,alergeni, pid))
             conn.commit()
 
         # Răspundem cu noul URL (dacă există) ca să putem actualiza tabelul la frontend

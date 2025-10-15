@@ -74,6 +74,7 @@
                     <th>Preț</th>
                     <th>Imagine</th>
                     <th>Ingrediente</th>
+                    <th>Alergeni</th>
                     <th>Categorie</th>
                     <th>Acțiuni</th>
                 </tr>
@@ -87,6 +88,7 @@
                     <td class="view-mode">{{ produs['pret'] }}</td>
                     <td class="view-mode">{{ produs['imagine'] }}</td>
                     <td class="view-mode">{{ produs['ingrediente'] }}</td>
+                    <td class="cell-alergeni view-cell">{{ produs['alergeni'] or '' }}</td>
                     <td class="view-mode">
                         <select style="display: none;">
                             {% for category in categories %}
@@ -152,11 +154,12 @@
             `;
         
             row.cells[5].innerHTML = `<input type="text" name="ingrediente" value="${row.cells[5].textContent.trim()}">`;
+            row.cells[6].innerHTML = `<input type="text" name="alergeni" value="${row.cells[6].textContent.trim()}">`;
         
-            const select = row.cells[6].querySelector('select');
-            const span = row.cells[6].querySelector('span');
+            const select = row.cells[7].querySelector('select');
+            const span = row.cells[7].querySelector('span');
             if (select && span) { select.style.display = 'inline-block'; span.style.display = 'none'; }
-            else if (!select) { row.cells[6].innerHTML = `<input type="text" name="categorie" value="${row.cells[6].textContent.trim()}">`; }
+            else if (!select) { row.cells[7].innerHTML = `<input type="text" name="categorie" value="${row.cells[7].textContent.trim()}">`; }
         
             row.querySelector('.edit-button').style.display = 'none';
             row.querySelector('.save-button').style.display = 'inline-block';
@@ -170,10 +173,12 @@
             fd.append('descriere',   row.querySelector('input[name="descriere"]').value);
             fd.append('pret',        row.querySelector('input[name="pret"]').value);
             fd.append('ingrediente', row.querySelector('input[name="ingrediente"]').value);
+            fd.append('alergeni', row.querySelector('input[name="alergeni"]').value);
+
         
-            const select = row.cells[6].querySelector('select');
-            const catInput = row.cells[6].querySelector('input[name="categorie"]');
-            const categorie = select ? select.value : (catInput ? catInput.value : row.cells[6].textContent.trim());
+            const select = row.cells[7].querySelector('select');
+            const catInput = row.cells[7].querySelector('input[name="categorie"]');
+            const categorie = select ? select.value : (catInput ? catInput.value : row.cells[7].textContent.trim());
             fd.append('categorie', categorie);
         
             const fileInput = row.querySelector('input[type="file"][name="imagine"]');
@@ -198,7 +203,9 @@
               cells[1].textContent = fd.get('nume');
               cells[2].textContent = fd.get('descriere');
               cells[3].textContent = fd.get('pret');
-        
+              cells[5].textContent = fd.get('ingrediente');
+              cells[6].textContent = fd.get('alergeni');
+            
               // Imagine: pune exact ce aveai în view (dacă în view afișai text/URL, folosește text; dacă afișai thumbnail, pune img)
               // — Dacă în tabelul tău „view” era text simplu:
               // cells[4].textContent = finalImg ? finalImg : 'None';
@@ -207,10 +214,11 @@
               cells[4].innerHTML = finalImg
                 ? `<img src="${finalImg}" alt="Imagine" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #eee">`
                 : `<span style="opacity:.6">None</span>`;
-        
+            
+
               // Categorie (span vizibil, select ascuns)
-              const span = cells[6].querySelector('span');
-              const sel  = cells[6].querySelector('select');
+              const span = cells[7].querySelector('span');
+              const sel  = cells[7].querySelector('select');
               if (span) span.textContent = categorie;
               if (sel)  sel.value = categorie;
         

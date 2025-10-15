@@ -145,6 +145,12 @@
                     <h3>Ingrediente:</h3>
                     <p>{{ produs['ingrediente'] }}</p>
                 </div>
+                {% if produs['alergeni'] %}
+                <div class="alergeni">
+                    <h4>Alergeni:</h4>
+                    <p>{{ produs['alergeni'] }}</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </main>
