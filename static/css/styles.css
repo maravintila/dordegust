@@ -644,21 +644,14 @@ header .hamburger {
   }
 
   .alergeni {
-    background-color: #fff8f7;
-    border-left: 4px solid var(--inghetata-capsuni);
-    padding: 10px 15px;
     margin-top: 10px;
-    border-radius: 6px;
+    font-size: 14px;
+    font-style: italic;
+    color: #7b4a4a;
+    opacity: 0.9;
   }
-  
-  .alergeni h4 {
-    margin: 0 0 6px 0;
-    color: var(--inghetata-capsuni);
-    font-family: 'Lato Bold', Arial, sans-serif;
-  }
-  .alergeni p {
-    margin: 0;
-    font-size: 15px;
-    color: var(--ciocolata-neagra);
+  .alergeni strong {
+    color: #a03a3a;
+    font-style: normal;
   }
   
