@@ -177,7 +177,19 @@ small {
                     <td class="view-mode">{{ produs['nume'] }}</td>
                     <td class="view-mode">{{ produs['descriere'] }}</td>
                     <td class="view-mode">{{ produs['pret'] }}</td>
-                    <td class="view-mode">{{ produs['imagine'] }}</td>
+                    <td>
+                        {% set img = produs['imagine'] %}
+                        {% if img %}
+                          {% if img.startswith('http') %}
+                            <img src="{{ img }}" alt="{{ produs['nume'] }}" class="thumb-preview">
+                          {% else %}
+                            <img src="{{ url_for('uploaded_file', filename=img) }}" alt="{{ produs['nume'] }}" class="thumb-preview">
+                          {% endif %}
+                        {% else %}
+                          <span style="opacity:0.6;">Fără imagine</span>
+                        {% endif %}
+                      </td>
+                      
                     <td class="view-mode">{{ produs['ingrediente'] }}</td>
                     <td class="cell-alergeni view-cell">{{ produs['alergeni'] or '' }}</td>
                     <td class="view-mode">
