@@ -138,6 +138,16 @@ small {
   text-align: center;
 }
 
+.delete-button {
+  margin-top: 6px;
+  background-color: #b11226;
+}
+
+.delete-button:hover {
+  background-color: #8e0f1e;
+}
+
+
         </style>
         
         
@@ -203,9 +213,11 @@ small {
                         <span>{{ produs['categorie'] }}</span>
                     </td>
                     <td>
-                        <button class="edit-button">Editează</button>
-                        <button class="save-button" style="display: none;">Salvează</button>
+                      <button class="edit-button">Editează</button>
+                      <button class="save-button" style="display: none;">Salvează</button>
+                      <button class="delete-button" style="background:#b11226;">Șterge</button>
                     </td>
+                    
                 </tr>
                 
                 {% endfor %}
@@ -233,6 +245,8 @@ small {
             const row = btn.closest('tr');
             if (btn.classList.contains('edit-button')) enableEditMode(row);
             if (btn.classList.contains('save-button')) saveRow(row);
+            if (btn.classList.contains('delete-button')) deleteRow(row);
+
           });
         
           function enableEditMode(row) {
@@ -390,6 +404,32 @@ if (galleryInput && galleryInput.files.length > 0) {
             }
           }
         });
+
+        async function deleteRow(row) {
+  const productId = row.dataset.id;
+
+  const confirmed = confirm(
+    "Sigur vrei să ștergi acest produs?\nAceastă acțiune este definitivă."
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const resp = await fetch(`/admin/delete-product/${productId}`, {
+      method: 'DELETE'
+    });
+
+    if (!resp.ok) throw new Error("Delete failed");
+
+    row.remove();
+    alert("Produs șters cu succes.");
+
+  } catch (err) {
+    console.error(err);
+    alert("Eroare la ștergerea produsului.");
+  }
+}
+
 
         </script>
         

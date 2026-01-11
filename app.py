@@ -354,6 +354,29 @@ def update_product(pid):
 
     return {"ok": True, "image": new_main_image_url}, 200
 
+@app.route('/admin/delete-product/<int:pid>', methods=['DELETE'])
+@login_required
+def delete_product(pid):
+
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+
+            # 1️⃣ ștergem galeria
+            cur.execute("""
+                DELETE FROM product_images
+                WHERE product_id = %s
+            """, (pid,))
+
+            # 2️⃣ ștergem produsul
+            cur.execute("""
+                DELETE FROM produse
+                WHERE id = %s
+            """, (pid,))
+
+        conn.commit()
+
+    return {"ok": True}, 200
+
 
 @app.route('/robots.txt')
 def robots():
