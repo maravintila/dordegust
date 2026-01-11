@@ -137,10 +137,67 @@ def allowed_file(filename):
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=False)
 
-# Handler pentru add-product (form multipart/form-data)
 @app.route('/admin/add-product', methods=['POST'])
-@login_required  # păstrează decoratorul tău de autentificare dacă există
+@login_required
 def add_product():
+
+    nume = request.form.get('nume')
+    descriere = request.form.get('descriere')
+    pret = request.form.get('pret')
+    ingrediente = request.form.get('ingrediente')
+    categorie = request.form.get('categorie')
+    alergeni = request.form.get('alergeni')
+
+    # === COPERTA ===
+    main_image = request.files.get('imagine_principala')
+    if not main_image or not main_image.filename:
+        flash("Imaginea principală este obligatorie.")
+        return redirect(url_for('admin'))
+
+    upload = cloudinary.uploader.upload(
+        main_image,
+        folder="dordegust/products"
+    )
+    main_image_url = upload["secure_url"]
+
+    # === GALERIE ===
+    gallery_files = request.files.getlist('imagini[]')
+
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+
+            # inserăm produsul
+            cur.execute("""
+                INSERT INTO produse (nume, descriere, pret, imagine, ingrediente, categorie, alergeni)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING id
+            """, (
+                nume, descriere, pret,
+                main_image_url,
+                ingrediente, categorie, alergeni
+            ))
+
+            product_id = cur.fetchone()[0]
+
+            # inserăm galeria
+            for idx, file in enumerate(gallery_files):
+                if file and file.filename:
+                    upload = cloudinary.uploader.upload(
+                        file,
+                        folder="dordegust/products/gallery"
+                    )
+                    image_url = upload["secure_url"]
+
+                    cur.execute("""
+                        INSERT INTO product_images (product_id, image_url, sort_order)
+                        VALUES (%s, %s, %s)
+                    """, (product_id, image_url, idx))
+
+        conn.commit()
+
+    flash("Produs adăugat cu succes!")
+    return redirect(url_for('admin'))
+
     # Obține câmpurile text (form)
     nume = request.form.get('nume')
     descriere = request.form.get('descriere')
