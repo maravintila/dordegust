@@ -766,4 +766,23 @@ header .hamburger {
   .nav-arrow:hover {
     background: white;
   }
+
+  /* === FORCE FIX PRODUCT IMAGE (DO NOT REMOVE) === */
+
+.product-details .image-wrapper {
+    width: 360px !important;
+    height: 360px !important;
+    max-width: 360px !important;
+    max-height: 360px !important;
+  }
+  
+  .product-details .image-wrapper img.product-main-img {
+    width: 360px !important;
+    height: 360px !important;
+    max-width: 360px !important;
+    max-height: 360px !important;
+    object-fit: cover !important;
+    display: block;
+  }
+  
   
