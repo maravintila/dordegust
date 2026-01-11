@@ -768,17 +768,17 @@ header .hamburger {
   /* === FORCE FIX PRODUCT IMAGE (DO NOT REMOVE) === */
 
 .product-details .image-wrapper {
-    width: 360px !important;
-    height: 360px !important;
-    max-width: 360px !important;
-    max-height: 360px !important;
+    width: 400px !important;
+    height: 400px !important;
+    max-width: 400px !important;
+    max-height: 400px !important;
   }
   
   .product-details .image-wrapper img.product-main-img {
-    width: 360px !important;
-    height: 360px !important;
-    max-width: 360px !important;
-    max-height: 360px !important;
+    width: 400px !important;
+    height: 400px !important;
+    max-width: 400px !important;
+    max-height: 400px !important;
     object-fit: cover !important;
     display: block;
   }
