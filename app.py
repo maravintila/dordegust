@@ -95,6 +95,16 @@ def contact():
 def product_details(product_id):
     with get_db_connection() as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+
+            # 1️⃣ luăm produsul
+            cur.execute('SELECT * FROM produse WHERE id = %s', (product_id,))
+            produs = cur.fetchone()
+
+            # ❗ dacă produsul nu există
+            if not produs:
+                return "Produs inexistent", 404
+
+            # 2️⃣ luăm galeria
             cur.execute("""
                 SELECT image_url
                 FROM product_images
@@ -104,8 +114,8 @@ def product_details(product_id):
 
             produs["imagini"] = [r["image_url"] for r in cur.fetchall()]
 
-            produs = cur.fetchone()
     return render_template('product.html', produs=produs)
+
 
 @app.route('/admin', methods=['GET'])
 @login_required
