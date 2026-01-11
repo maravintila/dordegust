@@ -683,7 +683,7 @@ header .hamburger {
     display: flex;
     gap: 40px;
     max-width: 1200px;
-    margin: 100px auto 60px; /* sub header */
+    margin: 60px auto; /* sub header */
     padding: 20px;
     align-items: flex-start;
   }
@@ -727,3 +727,34 @@ header .hamburger {
   .product-info {
     flex: 1;
   }
+  .image-wrapper {
+    position: relative;
+    width: fit-content;
+  }
+  
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.8);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .nav-arrow.left {
+    left: -18px;
+  }
+  
+  .nav-arrow.right {
+    right: -18px;
+  }
+  
+  .nav-arrow:hover {
+    background: white;
+  }
+  

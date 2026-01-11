@@ -96,23 +96,31 @@
             <div class="product-image">
 
                 <a href="/products" class="back-button">&larr; Înapoi la Produse</a>
-            
-                <img
-                  id="mainImage"
-                  src="{{ produs['imagine'] }}"
-                  alt="{{ produs['nume'] }}"
-                  class="product-main-img"
-                >
-            
-                {% if produs['imagini'] %}
+              
+                <div class="image-wrapper">
+                  <button class="nav-arrow left" onclick="prevImage()">&#10094;</button>
+              
+                  <img
+                    id="mainImage"
+                    src="{{ produs['imagine'] }}"
+                    alt="{{ produs['nume'] }}"
+                    class="product-main-img"
+                  >
+              
+                  <button class="nav-arrow right" onclick="nextImage()">&#10095;</button>
+                </div>
+              
                 <div class="image-thumbs">
+                  <!-- coperta -->
+                  <img src="{{ produs['imagine'] }}" onclick="setImageByIndex(0)">
+                  
                   {% for img in produs['imagini'] %}
-                    <img src="{{ img }}" onclick="setMainImage(this.src)">
+                    <img src="{{ img }}" onclick="setImageByIndex({{ loop.index }})">
                   {% endfor %}
                 </div>
-                {% endif %}
-            
+              
               </div>
+              
             
               
               
@@ -194,6 +202,34 @@
         function setMainImage(src) {
         const img = document.getElementById("mainImage");
         img.src = src;
+        }
+
+        const images = [
+            "{{ produs['imagine'] }}",
+            {% for img in produs['imagini'] %}
+            "{{ img }}",
+            {% endfor %}
+        ];
+
+        let currentIndex = 0;
+
+        function updateMainImage() {
+            document.getElementById("mainImage").src = images[currentIndex];
+        }
+
+        function setImageByIndex(index) {
+            currentIndex = index;
+            updateMainImage();
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateMainImage();
+        }
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateMainImage();
         }
       </script>
       
