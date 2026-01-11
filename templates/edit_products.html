@@ -333,7 +333,7 @@ if (mainImgInput && mainImgInput.files && mainImgInput.files[0]) {
 }
 
 // galerie (multiple)
-const galleryInput = row.querySelector('input[name="imagini"]');
+const galleryInput = row.querySelector('input[name="imagini[]"]');
 if (galleryInput && galleryInput.files.length > 0) {
   for (const file of galleryInput.files) {
     fd.append('imagini[]', file);
