@@ -121,38 +121,34 @@
 
     <main>
         <div class="product-details">
-            <div class="product-image">
-                <a href="/products" class="back-button">&larr; Înapoi la Produse</a>
+            <div class="product-image-wrapper">
+
+                <div class="product-gallery">
               
-                <!-- imagine mare -->
-                <img
-                  id="mainImage"
-                  src="{{ produs['imagine'] or url_for('static', filename='images/no-image.png') }}"
-                  alt="{{ produs['nume'] }}"
-                >
+                  <!-- thumbnails -->
+                  <div class="product-thumbs">
+                    {% if produs['imagine'] %}
+                      <img src="{{ produs['imagine'] }}" onclick="setMainImage(this.src)">
+                    {% endif %}
               
-                <!-- galerie -->
-                <div class="image-thumbs">
+                    {% for img in produs['imagini'] %}
+                      <img src="{{ img }}" onclick="setMainImage(this.src)">
+                    {% endfor %}
+                  </div>
               
-                  <!-- coperta ca thumbnail -->
-                  {% if produs['imagine'] %}
+                  <!-- imagine principală -->
+                  <div class="product-main">
                     <img
-                      src="{{ produs['imagine'] }}"
-                      onclick="setMainImage(this.src)"
-                      title="Copertă"
+                      id="mainImage"
+                      src="{{ produs['imagine'] or url_for('static', filename='images/no-image.png') }}"
+                      alt="{{ produs['nume'] }}"
                     >
-                  {% endif %}
-              
-                  <!-- restul imaginilor -->
-                  {% for img in produs['imagini'] %}
-                    <img
-                      src="{{ img }}"
-                      onclick="setMainImage(this.src)"
-                    >
-                  {% endfor %}
+                  </div>
               
                 </div>
+              
               </div>
+              
               
               
     
