@@ -93,27 +93,25 @@
 
     <main>
         <div class="product-details">
-            <div class="product-image-wrapper">
-                <div class="product-gallery">
+            <div class="product-image">
+
+                <a href="/products" class="back-button">&larr; Înapoi la Produse</a>
             
-                  <div class="product-thumbs">
-                    {% if produs['imagine'] %}
-                      <img src="{{ produs['imagine'] }}" onclick="setMainImage(this.src)">
-                    {% endif %}
-                    {% for img in produs['imagini'] %}
-                      <img src="{{ img }}" onclick="setMainImage(this.src)">
-                    {% endfor %}
-                  </div>
+                <img
+                  id="mainImage"
+                  src="{{ produs['imagine'] }}"
+                  alt="{{ produs['nume'] }}"
+                  class="product-main-img"
+                >
             
-                  <div class="product-main">
-                    <img
-                      id="mainImage"
-                      src="{{ produs['imagine'] }}"
-                      alt="{{ produs['nume'] }}"
-                    >
-                  </div>
-            
+                {% if produs['imagini'] %}
+                <div class="image-thumbs">
+                  {% for img in produs['imagini'] %}
+                    <img src="{{ img }}" onclick="setMainImage(this.src)">
+                  {% endfor %}
                 </div>
+                {% endif %}
+            
               </div>
             
               
