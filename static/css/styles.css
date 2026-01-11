@@ -695,11 +695,20 @@ header .hamburger {
     max-width: 40%;
   }
   
+/* CUTIE FIXĂ – STANDARD ECOMMERCE */
+.image-wrapper {
+    position: relative;
+    width: 360px;     /* AICI e standardul */
+    height: 360px;
+  }
+  
+  /* imaginea NU mai decide nimic */
   .product-main-img {
     width: 100%;
-    max-height: 420px;
-    object-fit: cover;
+    height: 100%;
+    object-fit: cover;   /* sau contain, dacă vrei fără tăiere */
     border-radius: 10px;
+    display: block;
   }
   
   /* thumbnails simple, jos */
