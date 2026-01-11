@@ -124,7 +124,7 @@
             <div class="product-image">
                 <a href="/products" class="back-button">&larr; Înapoi la Produse</a>
               
-                <!-- imagine principală -->
+                <!-- imagine mare -->
                 <img
                   id="mainImage"
                   src="{{ produs['imagine'] or url_for('static', filename='images/no-image.png') }}"
@@ -132,18 +132,28 @@
                 >
               
                 <!-- galerie -->
-                {% if produs['imagini'] %}
-                  <div class="image-thumbs">
-                    {% for img in produs['imagini'] %}
-                      <img
-                        src="{{ img }}"
-                        alt="{{ produs['nume'] }}"
-                        onclick="document.getElementById('mainImage').src=this.src"
-                      >
-                    {% endfor %}
-                  </div>
-                {% endif %}
+                <div class="image-thumbs">
+              
+                  <!-- coperta ca thumbnail -->
+                  {% if produs['imagine'] %}
+                    <img
+                      src="{{ produs['imagine'] }}"
+                      onclick="setMainImage(this.src)"
+                      title="Copertă"
+                    >
+                  {% endif %}
+              
+                  <!-- restul imaginilor -->
+                  {% for img in produs['imagini'] %}
+                    <img
+                      src="{{ img }}"
+                      onclick="setMainImage(this.src)"
+                    >
+                  {% endfor %}
+              
+                </div>
               </div>
+              
               
     
             <div class="product-info">
@@ -217,6 +227,12 @@
             burger.setAttribute('aria-expanded', menu.classList.contains('show'));
           });
         });
+
+
+        function setMainImage(src) {
+        const img = document.getElementById("mainImage");
+        img.src = src;
+        }
       </script>
       
 </body>
