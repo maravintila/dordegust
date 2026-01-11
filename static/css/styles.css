@@ -689,15 +689,13 @@ header .hamburger {
   }
 
 /* PRODUCT IMAGE – SAFE VERSION */
-
 .product-image {
-    flex: 1 1 40%;
-    max-width: 40%;
+    flex: 0 0 auto;     /* NU mai procent */
+    width: auto;
   }
   
 /* CUTIE FIXĂ – STANDARD ECOMMERCE */
 .image-wrapper {
-    position: relative;
     width: 360px;     /* AICI e standardul */
     height: 360px;
   }
