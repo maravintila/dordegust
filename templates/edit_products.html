@@ -260,10 +260,27 @@ imgCell.innerHTML = `
       ? `<img class="thumb-preview" src="${currentImg}" alt="Previzualizare" style="width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #ddd">`
       : `<div class="thumb-preview" style="width:80px;height:80px;border:1px dashed #ccc;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#777;font-size:12px;">Fără</div>`
     }
-    <label style="background:#ec4e5d;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
-      Alege imagine
-      <input type="file" name="imagine" accept="image/*" hidden>
-    </label>
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+
+<!-- imagine principală -->
+<label style="background:#ec4e5d;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
+  Imagine principală
+  <input type="file" name="imagine_principala" accept="image/*" hidden>
+</label>
+
+<!-- galerie -->
+<label style="background:#6c4ee5;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
+  Galerie (multiple)
+  <input type="file" name="imagini" accept="image/*" multiple hidden>
+</label>
+
+<small style="font-size:12px;color:#7a4444;opacity:0.8;text-align:center;">
+  Prima rămâne coperta.<br>
+  Poți adăuga mai multe poze.
+</small>
+
+</div>
+
     <small style="font-size:12px;color:#7a4444;opacity:0.8;text-align:center;">Dacă nu alegi nimic,<br>rămâne imaginea actuală.</small>
   </div>
 `;
@@ -309,10 +326,20 @@ imgCell.innerHTML = `
             const categorie = select ? select.value : (catInput ? catInput.value : row.cells[7].textContent.trim());
             fd.append('categorie', categorie);
         
-            const fileInput = row.querySelector('input[type="file"][name="imagine"]');
-            if (fileInput && fileInput.files && fileInput.files[0]) {
-              fd.append('imagine', fileInput.files[0]);
-            }
+            // imagine principală
+const mainImgInput = row.querySelector('input[name="imagine_principala"]');
+if (mainImgInput && mainImgInput.files && mainImgInput.files[0]) {
+  fd.append('imagine_principala', mainImgInput.files[0]);
+}
+
+// galerie (multiple)
+const galleryInput = row.querySelector('input[name="imagini"]');
+if (galleryInput && galleryInput.files.length > 0) {
+  for (const file of galleryInput.files) {
+    fd.append('imagini[]', file);
+  }
+}
+
             const existingImg = row.dataset.currentImage || '';
         
             try {

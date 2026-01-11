@@ -123,18 +123,28 @@
         <div class="product-details">
             <div class="product-image">
                 <a href="/products" class="back-button">&larr; Înapoi la Produse</a>
-                {% set img = produs['imagine'] %}
-{% if img %}
-    {% if img.startswith('http://') or img.startswith('https://') %}
-        <img src="{{ img }}" alt="{{ produs['nume'] }}">
-    {% else %}
-        <img src="{{ url_for('uploaded_file', filename=img) }}" alt="{{ produs['nume'] }}">
-    {% endif %}
-{% else %}
-    <img src="{{ url_for('static', filename='images/no-image.png') }}" alt="Fără imagine">
-{% endif %}
-
-            </div>
+              
+                <!-- imagine principală -->
+                <img
+                  id="mainImage"
+                  src="{{ produs['imagine'] or url_for('static', filename='images/no-image.png') }}"
+                  alt="{{ produs['nume'] }}"
+                >
+              
+                <!-- galerie -->
+                {% if produs['imagini'] %}
+                  <div class="image-thumbs">
+                    {% for img in produs['imagini'] %}
+                      <img
+                        src="{{ img }}"
+                        alt="{{ produs['nume'] }}"
+                        onclick="document.getElementById('mainImage').src=this.src"
+                      >
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              
     
             <div class="product-info">
                 <h1>{{ produs['nume'] }}</h1>

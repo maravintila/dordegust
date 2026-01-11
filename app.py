@@ -95,7 +95,15 @@ def contact():
 def product_details(product_id):
     with get_db_connection() as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute('SELECT * FROM produse WHERE id = %s', (product_id,))
+            cur.execute("""
+                SELECT image_url
+                FROM product_images
+                WHERE product_id = %s
+                ORDER BY sort_order, id
+            """, (product_id,))
+
+            produs["imagini"] = [r["image_url"] for r in cur.fetchall()]
+
             produs = cur.fetchone()
     return render_template('product.html', produs=produs)
 
@@ -204,57 +212,81 @@ def edit_product(product_id):
 @app.route('/admin/update-product/<int:pid>', methods=['POST'])
 @login_required
 def update_product(pid):
-    # Suport atât JSON vechi cât și form-data nou
-    if request.content_type and 'multipart/form-data' in request.content_type:
-        form = request.form
-        file = request.files.get('imagine')
-        nume = form.get('nume')
-        descriere = form.get('descriere')
-        pret = form.get('pret')
-        ingrediente = form.get('ingrediente')
-        categorie = form.get('categorie')
-        alergeni = form.get('alergeni')
-        new_image_url = None
 
-        # Dacă s-a ales o imagine nouă → urcă în Cloudinary
-        if file and file.filename:
+    form = request.form
+
+    nume = form.get('nume')
+    descriere = form.get('descriere')
+    pret = form.get('pret')
+    ingrediente = form.get('ingrediente')
+    categorie = form.get('categorie')
+    alergeni = form.get('alergeni')
+
+    # 🔹 imagine principală
+    main_image = request.files.get('imagine_principala')
+
+    # 🔹 galerie (multiple)
+    gallery_images = request.files.getlist('imagini[]')
+
+    new_main_image_url = None
+    gallery_urls = []
+
+    # upload imagine principală
+    if main_image and main_image.filename:
+        upload = cloudinary.uploader.upload(
+            main_image,
+            folder="dordegust/products"
+        )
+        new_main_image_url = upload["secure_url"]
+
+    # upload galerie
+    for img in gallery_images:
+        if img and img.filename:
             upload = cloudinary.uploader.upload(
-                file,
-                folder="dordegust/products"
+                img,
+                folder="dordegust/products/gallery"
             )
-            new_image_url = upload["secure_url"]
+            gallery_urls.append(upload["secure_url"])
 
-        with get_db_connection() as conn:
-            with conn.cursor() as cur:
-                if new_image_url:
-                    cur.execute("""
-                        UPDATE produse
-                        SET nume=%s, descriere=%s, pret=%s, ingrediente=%s, categorie=%s, alergeni=%s, imagine=%s
-                        WHERE id=%s
-                    """, (nume, descriere, pret, ingrediente, categorie,alergeni, new_image_url, pid))
-                else:
-                    cur.execute("""
-                        UPDATE produse
-                        SET nume=%s, descriere=%s, pret=%s, ingrediente=%s, categorie=%s, alergeni=%s
-                        WHERE id=%s
-                    """, (nume, descriere, pret, ingrediente, categorie,alergeni, pid))
-            conn.commit()
-
-        # Răspundem cu noul URL (dacă există) ca să putem actualiza tabelul la frontend
-        return {"ok": True, "image": new_image_url}, 200
-
-    # fallback: comportamentul vechi pe JSON (dacă încă mai trimiți JSON)
-    data = request.get_json(force=True)
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("""
-                UPDATE produse
-                SET nume=%s, descriere=%s, pret=%s, imagine=%s, ingrediente=%s, categorie=%s
-                WHERE id=%s
-            """, (data["nume"], data["descriere"], data["pret"], data["imagine"],
-                  data["ingrediente"], data["categorie"], pid))
+
+            # update produs (copertă + text)
+            if new_main_image_url:
+                cur.execute("""
+                    UPDATE produse
+                    SET nume=%s, descriere=%s, pret=%s,
+                        ingrediente=%s, categorie=%s, alergeni=%s,
+                        imagine=%s
+                    WHERE id=%s
+                """, (
+                    nume, descriere, pret,
+                    ingrediente, categorie, alergeni,
+                    new_main_image_url, pid
+                ))
+            else:
+                cur.execute("""
+                    UPDATE produse
+                    SET nume=%s, descriere=%s, pret=%s,
+                        ingrediente=%s, categorie=%s, alergeni=%s
+                    WHERE id=%s
+                """, (
+                    nume, descriere, pret,
+                    ingrediente, categorie, alergeni,
+                    pid
+                ))
+
+            # inserăm galeria
+            for idx, url in enumerate(gallery_urls):
+                cur.execute("""
+                    INSERT INTO product_images (product_id, image_url, sort_order)
+                    VALUES (%s, %s, %s)
+                """, (pid, url, idx))
+
         conn.commit()
-    return {"ok": True}, 200
+
+    return {"ok": True, "image": new_main_image_url}, 200
+
 
 @app.route('/robots.txt')
 def robots():
