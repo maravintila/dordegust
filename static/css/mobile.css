@@ -154,4 +154,72 @@
   .map-container iframe { height: 260px !important; width: 100% !important; }
   }
 
+  /* ========================= */
+/* PRODUCT PAGE – MOBILE */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+  /* layout pe coloană */
+  .product-details {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* imaginea: CUTIE FIXĂ pe mobil */
+  .image-wrapper {
+    width: 300px !important;
+    height: 300px !important;
+    margin: 0 auto 16px auto !important;
+  }
+
+  .product-main-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* săgeți – peste imagine */
+  .nav-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+
+  .nav-arrow.left {
+    left: 6px;
+  }
+
+  .nav-arrow.right {
+    right: 6px;
+  }
+
+  /* thumbnails jos */
+  .image-thumbs {
+    justify-content: center !important;
+    margin-top: 12px !important;
+  }
+
+  .image-thumbs img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  /* info produs */
+  .product-info {
+    width: 100% !important;
+    max-width: 420px !important;
+    text-align: center !important;
+  }
+
+  .product-info h1 {
+    font-size: 26px !important;
+  }
+
+  .product-info .price {
+    font-size: 20px !important;
+  }
+}
+
+
   
