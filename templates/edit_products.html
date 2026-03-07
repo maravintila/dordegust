@@ -250,13 +250,19 @@ small {
           const coverSrc = imgCell.querySelector("img")?.src || null;
       
           row.cells[1].innerHTML =
-            `<input type="text" name="nume" value="${row.cells[1].textContent.trim()}">`;
-      
-          row.cells[2].innerHTML =
-            `<textarea name="descriere">${row.cells[2].textContent.trim()}</textarea>`;
-      
-          row.cells[3].innerHTML =
-            `<input type="number" step="0.01" name="pret" value="${row.cells[3].textContent.trim()}">`;
+  `<input type="text" name="nume" value="${row.cells[1].textContent.trim()}">`;
+
+row.cells[2].innerHTML =
+  `<textarea name="descriere">${row.cells[2].textContent.trim()}</textarea>`;
+
+row.cells[3].innerHTML =
+  `<input type="number" step="0.01" name="pret" value="${row.cells[3].textContent.trim()}">`;
+
+row.cells[5].innerHTML =
+  `<textarea name="ingrediente">${row.cells[5].textContent.trim()}</textarea>`;
+
+row.cells[6].innerHTML =
+  `<textarea name="alergeni">${row.cells[6].textContent.trim()}</textarea>`;
       
           imgCell.innerHTML = `
             <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
