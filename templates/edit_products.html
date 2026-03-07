@@ -188,32 +188,10 @@ small {
                     <td class="view-mode">{{ produs['descriere'] }}</td>
                     <td class="view-mode">{{ produs['pret'] }}</td>
                     <td>
-                      {% if produs.images %}
-                        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
-                          {% for img in produs.images %}
-                            <div style="position:relative;">
-                              <img src="{{ img.image_url }}" class="thumb-preview">
-                              <button 
-                                class="delete-image-btn"
-                                data-id="{{ img.id }}"
-                                style="
-                                  position:absolute;
-                                  top:-6px;
-                                  right:-6px;
-                                  background:#b11226;
-                                  color:white;
-                                  border:none;
-                                  border-radius:50%;
-                                  width:20px;
-                                  height:20px;
-                                  font-size:12px;
-                                  cursor:pointer;
-                                ">
-                                ×
-                              </button>
-                            </div>
-                          {% endfor %}
-                        </div>
+                      {% if produs['imagine'] %}
+                        <img src="{{ produs['imagine'] }}" class="thumb-preview">
+                      {% else %}
+                        <span style="opacity:.5;">Fără imagine</span>
                       {% endif %}
                     </td>
                       
@@ -265,6 +243,50 @@ small {
             if (btn.classList.contains('delete-button')) deleteRow(row);
 
           });
+
+          async function loadGallery(productId) {
+  const resp = await fetch(`/products/${productId}`);
+  if (!resp.ok) return;
+
+  const html = await resp.text();
+
+  // extragem imaginile din pagina produs (hack simplu)
+  const temp = document.createElement("div");
+  temp.innerHTML = html;
+
+  const imgs = temp.querySelectorAll(".product-main-img, .image-thumbs img");
+
+  const container = document.getElementById(`gallery-${productId}`);
+  if (!container) return;
+
+  imgs.forEach(img => {
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "relative";
+
+    const image = document.createElement("img");
+    image.src = img.src;
+    image.className = "thumb-preview";
+
+    const del = document.createElement("button");
+    del.innerText = "×";
+    del.className = "delete-image-btn";
+    del.style.position = "absolute";
+    del.style.top = "-6px";
+    del.style.right = "-6px";
+    del.style.background = "#b11226";
+    del.style.color = "white";
+    del.style.border = "none";
+    del.style.borderRadius = "50%";
+    del.style.width = "20px";
+    del.style.height = "20px";
+    del.style.fontSize = "12px";
+    del.style.cursor = "pointer";
+
+    wrapper.appendChild(image);
+    wrapper.appendChild(del);
+    container.appendChild(wrapper);
+  });
+}
         
           function enableEditMode(row) {
             // 🔹 Salvăm HTML-ul original ca să putem reveni exact la view.
@@ -285,34 +307,21 @@ small {
             row.cells[3].innerHTML = `<input type="number" step="0.01" name="pret" value="${row.cells[3].textContent.trim()}">`;
         
             imgCell.classList.add('image-cell');
+            const productId = row.dataset.id;
+
 imgCell.innerHTML = `
-  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;max-width:110px;margin:auto;">
-    ${currentImg
-      ? `<img class="thumb-preview" src="${currentImg}" alt="Previzualizare" style="width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #ddd">`
-      : `<div class="thumb-preview" style="width:80px;height:80px;border:1px dashed #ccc;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#777;font-size:12px;">Fără</div>`
-    }
-    <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+  <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+    <div id="gallery-${productId}" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;"></div>
 
-<!-- imagine principală -->
-<label style="background:#ec4e5d;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
-  Imagine principală
-  <input type="file" name="imagine_principala" accept="image/*" hidden>
-</label>
+    <label style="background:#ec4e5d;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
+      Imagine principală
+      <input type="file" name="imagine_principala" accept="image/*" hidden>
+    </label>
 
-<!-- galerie -->
-<label style="background:#6c4ee5;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
-  Galerie (multiple)
-  <input type="file" name="imagini[]" accept="image/*" multiple hidden>
-</label>
-
-<small style="font-size:12px;color:#7a4444;opacity:0.8;text-align:center;">
-  Prima rămâne coperta.<br>
-  Poți adăuga mai multe poze.
-</small>
-
-</div>
-
-    <small style="font-size:12px;color:#7a4444;opacity:0.8;text-align:center;">Dacă nu alegi nimic,<br>rămâne imaginea actuală.</small>
+    <label style="background:#6c4ee5;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
+      Galerie (multiple)
+      <input type="file" name="imagini[]" accept="image/*" multiple hidden>
+    </label>
   </div>
 `;
 
@@ -329,6 +338,7 @@ imgCell.innerHTML = `
         
             row.querySelector('.edit-button').style.display = 'none';
             row.querySelector('.save-button').style.display = 'inline-block';
+            loadGallery(productId);
           }
 
           document.addEventListener('input', e => {
