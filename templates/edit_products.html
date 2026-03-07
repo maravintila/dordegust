@@ -254,7 +254,7 @@ small {
   const temp = document.createElement("div");
   temp.innerHTML = html;
 
-  const imgs = temp.querySelectorAll(".product-main-img, .image-thumbs img");
+  const imgs = temp.querySelectorAll(".image-thumbs img");
 
   const container = document.getElementById(`gallery-${productId}`);
   if (!container) return;
@@ -268,7 +268,7 @@ small {
     image.className = "thumb-preview";
 
     const del = document.createElement("button");
-    del.innerText = "×";
+    del.innerHTML = "&times;";
     del.className = "delete-image-btn";
     del.style.position = "absolute";
     del.style.top = "-6px";

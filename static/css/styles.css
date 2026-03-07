@@ -782,5 +782,30 @@ header .hamburger {
     object-fit: cover !important;
     display: block;
   }
+
+  .delete-image-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(3px);
+  }
+  
+  .delete-image-btn:hover {
+    background: #b11226;
+    transform: scale(1.1);
+  }
   
   
