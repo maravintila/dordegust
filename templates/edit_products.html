@@ -347,16 +347,8 @@ small {
       
                 const del = document.createElement("button");
                 del.innerHTML = "&times;";
-                del.style.position = "absolute";
-                del.style.top = "-5px";
-                del.style.right = "-5px";
-                del.style.background = "#b11226";
-                del.style.color = "white";
-                del.style.border = "none";
-                del.style.borderRadius = "50%";
-                del.style.width = "18px";
-                del.style.height = "18px";
-                del.style.cursor = "pointer";
+            del.className = "delete-image-btn";
+
       
                 del.addEventListener("click", () => {
                   wrapper.remove();
