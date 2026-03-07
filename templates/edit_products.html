@@ -246,10 +246,9 @@ small {
       
           const productId = row.dataset.id;
           const imgCell = row.cells[4];
-      
           const coverSrc = imgCell.querySelector("img")?.src || null;
       
-          // 🔵 Text fields
+          // 🔵 Transform fields
           row.cells[1].innerHTML =
             `<input type="text" name="nume" value="${row.cells[1].textContent.trim()}">`;
       
@@ -274,7 +273,7 @@ small {
           select.style.display = "block";
           select.value = currentCategory;
       
-          // 🔵 Galerie
+          // 🔵 Galerie UI
           imgCell.innerHTML = `
             <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
               <div id="gallery-${productId}" 
@@ -294,7 +293,7 @@ small {
       
           const container = document.getElementById(`gallery-${productId}`);
       
-          // 🔵 Copertă
+          // 🔵 Coperta
           if (coverSrc) {
             const wrapper = document.createElement("div");
             wrapper.style.position = "relative";
@@ -331,6 +330,7 @@ small {
           // 🔵 PREVIEW pentru imagini noi
           const galleryInput = imgCell.querySelector("input[name='imagini[]']");
           galleryInput.addEventListener("change", (e) => {
+      
             for (const file of e.target.files) {
       
               const reader = new FileReader();
@@ -339,12 +339,31 @@ small {
       
                 const wrapper = document.createElement("div");
                 wrapper.style.position = "relative";
+                wrapper.dataset.temp = "true";
       
                 const img = document.createElement("img");
                 img.src = event.target.result;
                 img.className = "thumb-preview";
       
+                const del = document.createElement("button");
+                del.innerHTML = "&times;";
+                del.style.position = "absolute";
+                del.style.top = "-5px";
+                del.style.right = "-5px";
+                del.style.background = "#b11226";
+                del.style.color = "white";
+                del.style.border = "none";
+                del.style.borderRadius = "50%";
+                del.style.width = "18px";
+                del.style.height = "18px";
+                del.style.cursor = "pointer";
+      
+                del.addEventListener("click", () => {
+                  wrapper.remove();
+                });
+      
                 wrapper.appendChild(img);
+                wrapper.appendChild(del);
                 container.appendChild(wrapper);
               };
       
@@ -373,9 +392,16 @@ small {
             fd.append("imagine_principala", mainInput.files[0]);
           }
       
+          // 🔵 Trimitem DOAR imaginile noi rămase (care nu au fost șterse)
           const galleryInput = row.querySelector("input[name='imagini[]']");
-          for (const file of galleryInput.files) {
-            fd.append("imagini[]", file);
+          const container = document.getElementById(`gallery-${productId}`);
+          const previews = container.querySelectorAll("div[data-temp='true'] img");
+      
+          let index = 0;
+          for (const preview of previews) {
+            const file = galleryInput.files[index];
+            if (file) fd.append("imagini[]", file);
+            index++;
           }
       
           try {
@@ -385,8 +411,6 @@ small {
             });
       
             if (!resp.ok) throw new Error();
-      
-            const data = await resp.json();
       
             showMessage("Actualizare realizată cu succes.");
       
@@ -399,6 +423,7 @@ small {
           }
         }
       
+        // 🔵 DELETE imagine DB
         document.addEventListener("click", async (e) => {
       
           if (!e.target.classList.contains("delete-image-btn")) return;
