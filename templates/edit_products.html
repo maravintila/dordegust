@@ -225,286 +225,184 @@ small {
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // === AUTO-RESIZE TEXTAREA ===
-            function autoResize(el) {
-            el.style.height = 'auto';
-            el.style.height = el.scrollHeight + 'px';
-            }
-            document.addEventListener('input', e => {
-            if (e.target.tagName === 'TEXTAREA') autoResize(e.target);
-            });
-
-          const table = document.getElementById('products-table');
-        
-          table.addEventListener('click', (e) => {
-            const btn = e.target.closest('button');
-            if (!btn) return;
-            const row = btn.closest('tr');
-            if (btn.classList.contains('edit-button')) enableEditMode(row);
-            if (btn.classList.contains('save-button')) saveRow(row);
-            if (btn.classList.contains('delete-button')) deleteRow(row);
-
-          });
-
-          function loadGallery(row) {
-  const productId = row.dataset.id;
-  const container = document.getElementById(`gallery-${productId}`);
-  if (!container) return;
-
-  const images = JSON.parse(row.dataset.images || "[]");
-
-  container.innerHTML = "";
-
-  images.forEach(imgObj => {
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "relative";
-
-    const image = document.createElement("img");
-    image.src = imgObj.image_url;
-    image.className = "thumb-preview";
-
-    const del = document.createElement("button");
-    del.innerHTML = "&times;";
-    del.className = "delete-image-btn";
-    del.dataset.id = imgObj.id;   // 🔥 IMPORTANT
-
-    wrapper.appendChild(image);
-    wrapper.appendChild(del);
-    container.appendChild(wrapper);
-  });
-}
-  
-          function enableEditMode(row) {
-            // 🔹 Salvăm HTML-ul original ca să putem reveni exact la view.
-            row.classList.add('editing');
-            row.dataset.viewHtml = row.innerHTML;
-        
-            // coloane: 0 ID | 1 Nume | 2 Descriere | 3 Preț | 4 Imagine | 5 Ingrediente | 6 Categorie | 7 Acțiuni
-            const imgCell = row.cells[4];
-            const currentImg =
-              imgCell.querySelector('img')?.getAttribute('src') ||
-              imgCell.textContent.trim();
-        
-            row.dataset.currentImage = currentImg;
-        
-            row.cells[1].innerHTML = `<input type="text" name="nume" value="${row.cells[1].textContent.trim()}">`;
-            row.cells[2].innerHTML = `<textarea name="descriere">${row.cells[2].textContent.trim()}</textarea>`;
-            autoResize(row.querySelector('textarea[name="descriere"]'));
-            row.cells[3].innerHTML = `<input type="number" step="0.01" name="pret" value="${row.cells[3].textContent.trim()}">`;
-        
-            imgCell.classList.add('image-cell');
-            const productId = row.dataset.id;
-
-imgCell.innerHTML = `
-  <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
-    <div id="gallery-${productId}" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;"></div>
-
-    <label style="background:#ec4e5d;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
-      Imagine principală
-      <input type="file" name="imagine_principala" accept="image/*" hidden>
-    </label>
-
-    <label style="background:#6c4ee5;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;">
-      Galerie (multiple)
-      <input type="file" name="imagini[]" accept="image/*" multiple hidden>
-    </label>
-  </div>
-`;
-
-            row.cells[5].innerHTML = `<textarea name="ingrediente">${row.cells[5].textContent.trim()}</textarea>`;
-            autoResize(row.querySelector('textarea[name="ingrediente"]'));
-
-            row.cells[6].innerHTML = `<textarea name="alergeni">${row.cells[6].textContent.trim()}</textarea>`;
-            autoResize(row.querySelector('textarea[name="alergeni"]'));
-        
-            const select = row.cells[7].querySelector('select');
-            const span = row.cells[7].querySelector('span');
-            if (select && span) { select.style.display = 'inline-block'; span.style.display = 'none'; }
-            else if (!select) { row.cells[7].innerHTML = `<input type="text" name="categorie" value="${row.cells[7].textContent.trim()}">`; }
-        
-            row.querySelector('.edit-button').style.display = 'none';
-            row.querySelector('.save-button').style.display = 'inline-block';
+      document.addEventListener("DOMContentLoaded", () => {
+      
+        const table = document.getElementById("products-table");
+      
+        table.addEventListener("click", (e) => {
+          const btn = e.target.closest("button");
+          if (!btn) return;
+      
+          const row = btn.closest("tr");
+      
+          if (btn.classList.contains("edit-button")) enableEditMode(row);
+          if (btn.classList.contains("save-button")) saveRow(row);
+          if (btn.classList.contains("delete-button")) deleteRow(row);
+        });
+      
+        function enableEditMode(row) {
+      
+          row.classList.add("editing");
+      
+          const productId = row.dataset.id;
+          const imgCell = row.cells[4];
+      
+          const coverSrc = imgCell.querySelector("img")?.src || null;
+      
+          row.cells[1].innerHTML =
+            `<input type="text" name="nume" value="${row.cells[1].textContent.trim()}">`;
+      
+          row.cells[2].innerHTML =
+            `<textarea name="descriere">${row.cells[2].textContent.trim()}</textarea>`;
+      
+          row.cells[3].innerHTML =
+            `<input type="number" step="0.01" name="pret" value="${row.cells[3].textContent.trim()}">`;
+      
+          imgCell.innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+              <div id="gallery-${productId}" 
+                   style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
+      
+              <label style="background:#ec4e5d;color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;">
+                Imagine principală
+                <input type="file" name="imagine_principala" hidden>
+              </label>
+      
+              <label style="background:#6c4ee5;color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;">
+                Galerie
+                <input type="file" name="imagini[]" multiple hidden>
+              </label>
+            </div>
+          `;
+      
+          // 🔵 Adaugă coperta
+          if (coverSrc) {
             const container = document.getElementById(`gallery-${productId}`);
-
-if (row.dataset.currentImage) {
-  const coverWrapper = document.createElement("div");
-  coverWrapper.style.position = "relative";
-
-  const cover = document.createElement("img");
-  cover.src = row.dataset.currentImage;
-  cover.className = "thumb-preview";
-
-  coverWrapper.appendChild(cover);
-  container.appendChild(coverWrapper);
-}
-            loadGallery(row);
+            const wrapper = document.createElement("div");
+            wrapper.style.position = "relative";
+      
+            const img = document.createElement("img");
+            img.src = coverSrc;
+            img.className = "thumb-preview";
+      
+            wrapper.appendChild(img);
+            container.appendChild(wrapper);
           }
-
-          document.addEventListener('input', e => {
-            if (e.target.tagName.toLowerCase() === 'textarea') {
-                e.target.style.height = 'auto';
-                e.target.style.height = e.target.scrollHeight + 'px';
-            }
+      
+          // 🔵 Adaugă galeria
+          const images = JSON.parse(row.dataset.images || "[]");
+          const container = document.getElementById(`gallery-${productId}`);
+      
+          images.forEach(imgObj => {
+            const wrapper = document.createElement("div");
+            wrapper.style.position = "relative";
+      
+            const img = document.createElement("img");
+            img.src = imgObj.image_url;
+            img.className = "thumb-preview";
+      
+            const del = document.createElement("button");
+            del.innerHTML = "&times;";
+            del.className = "delete-image-btn";
+            del.dataset.id = imgObj.id;
+      
+            wrapper.appendChild(img);
+            wrapper.appendChild(del);
+            container.appendChild(wrapper);
+          });
+      
+          row.querySelector(".edit-button").style.display = "none";
+          row.querySelector(".save-button").style.display = "inline-block";
+        }
+      
+        async function saveRow(row) {
+      
+          const productId = row.dataset.id;
+          const fd = new FormData();
+      
+          fd.append("nume", row.querySelector("input[name='nume']").value);
+          fd.append("descriere", row.querySelector("textarea[name='descriere']").value);
+          fd.append("pret", row.querySelector("input[name='pret']").value);
+          fd.append("ingrediente", row.querySelector("textarea[name='ingrediente']").value);
+          fd.append("alergeni", row.querySelector("textarea[name='alergeni']").value);
+      
+          const mainInput = row.querySelector("input[name='imagine_principala']");
+          if (mainInput.files[0]) {
+            fd.append("imagine_principala", mainInput.files[0]);
+          }
+      
+          const galleryInput = row.querySelector("input[name='imagini[]']");
+          for (const file of galleryInput.files) {
+            fd.append("imagini[]", file);
+          }
+      
+          try {
+            const resp = await fetch(`/admin/update-product/${productId}`, {
+              method: "POST",
+              body: fd
             });
-
-        
-          async function saveRow(row) {
-            const productId = row.dataset.id;
-        
-            const fd = new FormData();
-            fd.append('nume', row.querySelector('input[name="nume"]').value);
-            fd.append('descriere', row.querySelector('textarea[name="descriere"]').value);
-            fd.append('pret', row.querySelector('input[name="pret"]').value);
-            fd.append('ingrediente', row.querySelector('textarea[name="ingrediente"]').value);
-            fd.append('alergeni', row.querySelector('textarea[name="alergeni"]').value);
-
-
-
-        
-            const select = row.cells[7].querySelector('select');
-            const catInput = row.cells[7].querySelector('input[name="categorie"]');
-            const categorie = select ? select.value : (catInput ? catInput.value : row.cells[7].textContent.trim());
-            fd.append('categorie', categorie);
-        
-            // imagine principală
-const mainImgInput = row.querySelector('input[name="imagine_principala"]');
-if (mainImgInput && mainImgInput.files && mainImgInput.files[0]) {
-  fd.append('imagine_principala', mainImgInput.files[0]);
-}
-
-// galerie (multiple)
-const galleryInput = row.querySelector('input[name="imagini[]"]');
-if (galleryInput && galleryInput.files.length > 0) {
-  for (const file of galleryInput.files) {
-    fd.append('imagini[]', file);
-  }
-}
-
-            const existingImg = row.dataset.currentImage || '';
-        
-            try {
-              const resp = await fetch(`/admin/update-product/${productId}`, { method: 'POST', body: fd });
-              if (!resp.ok) throw new Error('Update failed');
-              const data = await resp.json();
-              // dacă s-au adăugat imagini noi
-if (data.gallery_count && data.gallery_count > 0) {
-  // reîncărcăm pagina pentru consistență simplă
-  location.reload();
-  return;
-}
-              const finalImg = data.image || existingImg || '';
-        
-              // 🔹 Restaurăm EXACT HTML-ul view inițial al rândului
-              const original = row.dataset.viewHtml;
-              if (original) row.innerHTML = original;
-        
-              // 🔹 Acum scriem valorile noi în celulele din view
-              // Re-selectăm celulele după restaurare:
-              const cells = row.cells;
-              cells[1].textContent = fd.get('nume');
-              cells[2].textContent = fd.get('descriere');
-              cells[3].textContent = fd.get('pret');
-              cells[5].textContent = fd.get('ingrediente');
-              cells[6].textContent = fd.get('alergeni');
-            
-              // Imagine: pune exact ce aveai în view (dacă în view afișai text/URL, folosește text; dacă afișai thumbnail, pune img)
-              // — Dacă în tabelul tău „view” era text simplu:
-              // cells[4].textContent = finalImg ? finalImg : 'None';
-        
-              // — Dacă vrei thumbnail și în view:
-              cells[4].innerHTML = finalImg
-                ? `<img src="${finalImg}" alt="Imagine" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #eee">`
-                : `<span style="opacity:.6">None</span>`;
-            
-
-              // Categorie (span vizibil, select ascuns)
-              const span = cells[7].querySelector('span');
-              const sel  = cells[7].querySelector('select');
-              if (span) span.textContent = categorie;
-              if (sel)  sel.value = categorie;
-        
-              // Asigurăm starea butoanelor
-              const editBtn = row.querySelector('.edit-button');
-              const saveBtn = row.querySelector('.save-button');
-              if (editBtn) editBtn.style.display = 'inline-block';
-              if (saveBtn) saveBtn.style.display = 'none';
-        
-              
-            } catch (err) {
-              console.error(err);
-              showMessage("Eroare la actualizare.", true);
-            }
+      
+            if (!resp.ok) throw new Error();
+      
+            // 🔵 Simplu și stabil:
+            location.reload();
+      
+          } catch {
+            alert("Eroare la salvare.");
+          }
+        }
+      
+        document.addEventListener("click", async (e) => {
+      
+          if (!e.target.classList.contains("delete-image-btn")) return;
+      
+          const imageId = e.target.dataset.id;
+          const row = e.target.closest("tr");
+      
+          if (!confirm("Ștergi această imagine?")) return;
+      
+          try {
+            const resp = await fetch(`/admin/delete-image/${imageId}`, {
+              method: "DELETE"
+            });
+      
+            if (!resp.ok) throw new Error();
+      
+            // 🔵 Scoatem din dataset
+            let images = JSON.parse(row.dataset.images || "[]");
+            images = images.filter(img => String(img.id) !== String(imageId));
+            row.dataset.images = JSON.stringify(images);
+      
+            // 🔵 Scoatem din DOM
+            e.target.parentElement.remove();
+      
+          } catch {
+            alert("Eroare la ștergere.");
           }
         });
-
-        function showMessage(text, isError=false){
-  const box = document.getElementById("admin-message");
-  box.textContent = text;
-  box.classList.toggle("error", isError);
-  box.style.display = "block";
-
-  setTimeout(()=>{
-    box.style.display = "none";
-  }, 3000);
-}
-document.addEventListener("click", async function(e){
-  if(e.target.classList.contains("delete-image-btn")){
-    const id = e.target.dataset.id;
-
-    if(!confirm("Ștergi această imagine?")) return;
-
-    try{
-      const resp = await fetch(`/admin/delete-image/${id}`, {
-        method: "DELETE"
-      });
-
-      if(!resp.ok) throw new Error();
-
-      const row = e.target.closest("tr");
-const id = e.target.dataset.id;
-
-// actualizăm dataset.images
-let images = JSON.parse(row.dataset.images || "[]");
-images = images.filter(img => String(img.id) !== String(id));
-row.dataset.images = JSON.stringify(images);
-
-// scoatem din DOM
-e.target.parentElement.remove();
-      showMessage("Imagine ștearsă cu succes!");
-    }
-    catch{
-      showMessage("Eroare la ștergerea imaginii.", true);
-    }
-  }
-});
+      
         async function deleteRow(row) {
-  const productId = row.dataset.id;
-
-  const confirmed = confirm(
-    "Sigur vrei să ștergi acest produs?\nAceastă acțiune este definitivă."
-  );
-
-  if (!confirmed) return;
-
-  try {
-    const resp = await fetch(`/admin/delete-product/${productId}`, {
-      method: 'DELETE'
-    });
-
-    if (!resp.ok) throw new Error("Delete failed");
-
-    row.remove();
-    alert("Produs șters cu succes.");
-
-  } catch (err) {
-    console.error(err);
-    alert("Eroare la ștergerea produsului.");
-  }
-}
-
-
-        </script>
+      
+          const productId = row.dataset.id;
+      
+          if (!confirm("Sigur vrei să ștergi produsul?")) return;
+      
+          try {
+            const resp = await fetch(`/admin/delete-product/${productId}`, {
+              method: "DELETE"
+            });
+      
+            if (!resp.ok) throw new Error();
+      
+            row.remove();
+      
+          } catch {
+            alert("Eroare la ștergere produs.");
+          }
+        }
+      
+      });
+      </script>
         
         
             <footer>
