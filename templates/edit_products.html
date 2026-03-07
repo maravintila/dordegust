@@ -65,14 +65,15 @@
         }
         
         textarea {
-          width: 100%;
-  min-height: 120px;          /* mai mare */
-  resize: vertical;           /* să poți trage în jos */
-  white-space: nowrap;        /* 🔥 fără wrap */
-  overflow-x: auto;           /* scroll orizontal */
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  white-space: pre;      /* mai corect decât nowrap */
+  overflow-x: auto;
   overflow-y: auto;
   font-family: monospace;
-            }
+  background: #fffdfd;
+}
 
         
         /* Butoane */
@@ -121,14 +122,7 @@
           font-size: 13px;
           padding: 4px 8px;
         }
-        textarea {
-  resize: none;
-  overflow: hidden;
-  line-height: 1.4;
-  min-height: 60px;
-  max-height: 250px;
-  background: #fffdfd;
-}
+
 
 tr.editing td {
   background: #fff7f6;
