@@ -182,7 +182,10 @@ small {
             </thead>
             <tbody>
                 {% for produs in produse %}
-                <tr data-id="{{ produs['id'] }}">
+                <tr 
+  data-id="{{ produs['id'] }}"
+  data-images='{{ produs["images"] | tojson | safe }}'
+>
                     <td>{{ produs['id'] }}</td>
                     <td class="view-mode">{{ produs['nume'] }}</td>
                     <td class="view-mode">{{ produs['descriere'] }}</td>
@@ -259,21 +262,27 @@ small {
   const container = document.getElementById(`gallery-${productId}`);
   if (!container) return;
 
-  imgs.forEach(img => {
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "relative";
+  const images = JSON.parse(row.dataset.images);
 
-    const image = document.createElement("img");
-    image.src = img.src;
-    image.className = "thumb-preview";
+images.forEach(imgObj => {
+  const image = document.createElement("img");
+image.src = imgObj.image_url;
 
-    const del = document.createElement("button");
-    del.innerHTML = "&times;";
-    del.className = "delete-image-btn";
+const del = document.createElement("button");
+del.innerHTML = "&times;";
+del.className = "delete-image-btn";
 
-    wrapper.appendChild(image);
-    wrapper.appendChild(del);
-    container.appendChild(wrapper);
+del.addEventListener("click", async () => {
+  if (!confirm("Vrei să ștergi această imagine?")) return;
+
+  const resp = await fetch(`/admin/delete-image/${imgObj.id}`, {
+    method: "DELETE"
+  });
+
+  if (resp.ok) {
+    wrapper.remove();
+  }
+});
   });
 }
         
