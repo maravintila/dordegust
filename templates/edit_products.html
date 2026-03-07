@@ -188,17 +188,34 @@ small {
                     <td class="view-mode">{{ produs['descriere'] }}</td>
                     <td class="view-mode">{{ produs['pret'] }}</td>
                     <td>
-                        {% set img = produs['imagine'] %}
-                        {% if img %}
-                          {% if img.startswith('http') %}
-                            <img src="{{ img }}" alt="{{ produs['nume'] }}" class="thumb-preview">
-                          {% else %}
-                            <img src="{{ url_for('uploaded_file', filename=img) }}" alt="{{ produs['nume'] }}" class="thumb-preview">
-                          {% endif %}
-                        {% else %}
-                          <span style="opacity:0.6;">Fără imagine</span>
-                        {% endif %}
-                      </td>
+                      {% if produs.images %}
+                        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+                          {% for img in produs.images %}
+                            <div style="position:relative;">
+                              <img src="{{ img.image_url }}" class="thumb-preview">
+                              <button 
+                                class="delete-image-btn"
+                                data-id="{{ img.id }}"
+                                style="
+                                  position:absolute;
+                                  top:-6px;
+                                  right:-6px;
+                                  background:#b11226;
+                                  color:white;
+                                  border:none;
+                                  border-radius:50%;
+                                  width:20px;
+                                  height:20px;
+                                  font-size:12px;
+                                  cursor:pointer;
+                                ">
+                                ×
+                              </button>
+                            </div>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                    </td>
                       
                     <td class="view-mode">{{ produs['ingrediente'] }}</td>
                     <td class="cell-alergeni view-cell">{{ produs['alergeni'] or '' }}</td>
@@ -223,7 +240,7 @@ small {
                 {% endfor %}
             </tbody>
         </table>
-
+        <div id="admin-message" class="admin-message" style="display:none;"></div>
     </main>
 
     <script>
@@ -397,14 +414,51 @@ if (galleryInput && galleryInput.files.length > 0) {
               if (editBtn) editBtn.style.display = 'inline-block';
               if (saveBtn) saveBtn.style.display = 'none';
         
-              alert('Produs actualizat cu succes!');
+              if (data.gallery_count && data.gallery_count > 0) {
+                showMessage(` ${data.gallery_count} imagine(i) adăugate în galerie.`);
+              } else if (data.image) {
+                showMessage("Imaginea principală actualizată.");
+              } else {
+                showMessage("Produs actualizat cu succes.");
+              }
             } catch (err) {
               console.error(err);
-              alert('Eroare la actualizarea produsului.');
+              showMessage("Eroare la actualizare.", true);
             }
           }
         });
 
+        function showMessage(text, isError=false){
+  const box = document.getElementById("admin-message");
+  box.textContent = text;
+  box.classList.toggle("error", isError);
+  box.style.display = "block";
+
+  setTimeout(()=>{
+    box.style.display = "none";
+  }, 3000);
+}
+document.addEventListener("click", async function(e){
+  if(e.target.classList.contains("delete-image-btn")){
+    const id = e.target.dataset.id;
+
+    if(!confirm("Ștergi această imagine?")) return;
+
+    try{
+      const resp = await fetch(`/admin/delete-image/${id}`, {
+        method: "DELETE"
+      });
+
+      if(!resp.ok) throw new Error();
+
+      e.target.parentElement.remove();
+      showMessage("Imagine ștearsă cu succes!");
+    }
+    catch{
+      showMessage("Eroare la ștergerea imaginii.", true);
+    }
+  }
+});
         async function deleteRow(row) {
   const productId = row.dataset.id;
 

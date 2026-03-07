@@ -256,12 +256,28 @@ def logout():
 def edit_products():
     with get_db_connection() as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute('SELECT * FROM produse')
+
+            cur.execute("""
+                SELECT p.*,
+                       COALESCE(
+                         json_agg(
+                           json_build_object(
+                             'id', pi.id,
+                             'image_url', pi.image_url
+                           )
+                         ) FILTER (WHERE pi.id IS NOT NULL),
+                         '[]'
+                       ) AS images
+                FROM produse p
+                LEFT JOIN product_images pi ON pi.product_id = p.id
+                GROUP BY p.id
+            """)
             produse = cur.fetchall()
+
             cur.execute('SELECT DISTINCT categorie FROM produse')
             categories = cur.fetchall()
-    return render_template('edit_products.html', produse=produse, categories=categories)
 
+    return render_template('edit_products.html', produse=produse, categories=categories)
 
 
 @app.route('/admin/edit-product/<int:product_id>', methods=['GET'])
@@ -352,7 +368,37 @@ def update_product(pid):
 
         conn.commit()
 
-    return {"ok": True, "image": new_main_image_url}, 200
+    return {
+    "ok": True,
+    "image": new_main_image_url,
+    "gallery_count": len(gallery_urls)
+}, 200
+
+@app.route('/admin/delete-image/<int:image_id>', methods=['DELETE'])
+@login_required
+def delete_image(image_id):
+
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+
+            # luăm URL-ul (dacă vrei să ștergi și din Cloudinary)
+            cur.execute("SELECT image_url FROM product_images WHERE id=%s", (image_id,))
+            row = cur.fetchone()
+
+            if not row:
+                return {"error": "Not found"}, 404
+
+            image_url = row[0]
+
+            # ștergem din DB
+            cur.execute("DELETE FROM product_images WHERE id=%s", (image_id,))
+
+        conn.commit()
+
+    # optional: ștergere din Cloudinary
+    # cloudinary.uploader.destroy(public_id_extras...)
+
+    return {"ok": True}, 200
 
 @app.route('/admin/delete-product/<int:pid>', methods=['DELETE'])
 @login_required
