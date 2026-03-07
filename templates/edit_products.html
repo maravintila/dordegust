@@ -325,6 +325,19 @@ imgCell.innerHTML = `
         
             row.querySelector('.edit-button').style.display = 'none';
             row.querySelector('.save-button').style.display = 'inline-block';
+            const container = document.getElementById(`gallery-${productId}`);
+
+if (row.dataset.currentImage) {
+  const coverWrapper = document.createElement("div");
+  coverWrapper.style.position = "relative";
+
+  const cover = document.createElement("img");
+  cover.src = row.dataset.currentImage;
+  cover.className = "thumb-preview";
+
+  coverWrapper.appendChild(cover);
+  container.appendChild(coverWrapper);
+}
             loadGallery(row);
           }
 
@@ -374,6 +387,12 @@ if (galleryInput && galleryInput.files.length > 0) {
               const resp = await fetch(`/admin/update-product/${productId}`, { method: 'POST', body: fd });
               if (!resp.ok) throw new Error('Update failed');
               const data = await resp.json();
+              // dacă s-au adăugat imagini noi
+if (data.gallery_count && data.gallery_count > 0) {
+  // reîncărcăm pagina pentru consistență simplă
+  location.reload();
+  return;
+}
               const finalImg = data.image || existingImg || '';
         
               // 🔹 Restaurăm EXACT HTML-ul view inițial al rândului
@@ -411,13 +430,7 @@ if (galleryInput && galleryInput.files.length > 0) {
               if (editBtn) editBtn.style.display = 'inline-block';
               if (saveBtn) saveBtn.style.display = 'none';
         
-              if (data.gallery_count && data.gallery_count > 0) {
-                showMessage(` ${data.gallery_count} imagine(i) adăugate în galerie.`);
-              } else if (data.image) {
-                showMessage("Imaginea principală actualizată.");
-              } else {
-                showMessage("Produs actualizat cu succes.");
-              }
+              
             } catch (err) {
               console.error(err);
               showMessage("Eroare la actualizare.", true);
@@ -448,7 +461,16 @@ document.addEventListener("click", async function(e){
 
       if(!resp.ok) throw new Error();
 
-      e.target.parentElement.remove();
+      const row = e.target.closest("tr");
+const id = e.target.dataset.id;
+
+// actualizăm dataset.images
+let images = JSON.parse(row.dataset.images || "[]");
+images = images.filter(img => String(img.id) !== String(id));
+row.dataset.images = JSON.stringify(images);
+
+// scoatem din DOM
+e.target.parentElement.remove();
       showMessage("Imagine ștearsă cu succes!");
     }
     catch{
