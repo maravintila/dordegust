@@ -247,45 +247,34 @@ small {
 
           });
 
-          async function loadGallery(productId) {
-  const resp = await fetch(`/products/${productId}`);
-  if (!resp.ok) return;
-
-  const html = await resp.text();
-
-  // extragem imaginile din pagina produs (hack simplu)
-  const temp = document.createElement("div");
-  temp.innerHTML = html;
-
-  const imgs = temp.querySelectorAll(".image-thumbs img");
-
+          function loadGallery(row) {
+  const productId = row.dataset.id;
   const container = document.getElementById(`gallery-${productId}`);
   if (!container) return;
 
-  const images = JSON.parse(row.dataset.images);
+  const images = JSON.parse(row.dataset.images || "[]");
 
-images.forEach(imgObj => {
-  const image = document.createElement("img");
-image.src = imgObj.image_url;
+  container.innerHTML = "";
 
-const del = document.createElement("button");
-del.innerHTML = "&times;";
-del.className = "delete-image-btn";
+  images.forEach(imgObj => {
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "relative";
 
-del.addEventListener("click", async () => {
-  if (!confirm("Vrei să ștergi această imagine?")) return;
+    const image = document.createElement("img");
+    image.src = imgObj.image_url;
+    image.className = "thumb-preview";
 
-  const resp = await fetch(`/admin/delete-image/${imgObj.id}`, {
-    method: "DELETE"
-  });
+    const del = document.createElement("button");
+    del.innerHTML = "&times;";
+    del.className = "delete-image-btn";
+    del.dataset.id = imgObj.id;   // 🔥 IMPORTANT
 
-  if (resp.ok) {
-    wrapper.remove();
-  }
-});
+    wrapper.appendChild(image);
+    wrapper.appendChild(del);
+    container.appendChild(wrapper);
   });
 }
-        
+  
           function enableEditMode(row) {
             // 🔹 Salvăm HTML-ul original ca să putem reveni exact la view.
             row.classList.add('editing');
@@ -336,7 +325,7 @@ imgCell.innerHTML = `
         
             row.querySelector('.edit-button').style.display = 'none';
             row.querySelector('.save-button').style.display = 'inline-block';
-            loadGallery(productId);
+            loadGallery(row);
           }
 
           document.addEventListener('input', e => {
