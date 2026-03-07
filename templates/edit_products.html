@@ -65,15 +65,12 @@
         }
         
         textarea {
-  width: 100%;
-  min-height: 140px;
-  resize: vertical;
-  white-space: pre;      /* mai corect decât nowrap */
-  overflow-x: auto;
-  overflow-y: auto;
-  font-family: monospace;
-  background: #fffdfd;
-}
+          width: 100%;
+          resize: vertical;
+          min-height: 120px;
+          line-height: 1.4;
+          font-family: 'Lato', Arial, sans-serif;
+        }
 
         
         /* Butoane */
@@ -258,6 +255,12 @@ small {
       
           row.cells[6].innerHTML =
             `<textarea name="alergeni">${row.cells[6].textContent.trim()}</textarea>`;
+          
+            const textareas = row.querySelectorAll("textarea");
+textareas.forEach(t => {
+  t.style.height = "auto";
+  t.style.height = t.scrollHeight + "px";
+});
       
           // 🔵 Categorie
           const catCell = row.cells[7];
