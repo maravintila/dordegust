@@ -65,12 +65,13 @@
         }
         
         textarea {
-            resize: none;
-            overflow: hidden;
-            line-height: 1.4;
-            background: #fffdfd;
-            min-height: 50px;
-            max-height: none;
+          width: 100%;
+  min-height: 120px;          /* mai mare */
+  resize: vertical;           /* să poți trage în jos */
+  white-space: nowrap;        /* 🔥 fără wrap */
+  overflow-x: auto;           /* scroll orizontal */
+  overflow-y: auto;
+  font-family: monospace;
             }
 
         
