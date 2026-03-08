@@ -296,70 +296,89 @@ def edit_product(product_id):
 @login_required
 def update_product(pid):
 
-    form = request.form
+    nume = request.form.get('nume')
+    descriere = request.form.get('descriere')
+    pret = request.form.get('pret')
+    ingrediente = request.form.get('ingrediente')
+    categorie = request.form.get('categorie')
+    alergeni = request.form.get('alergeni')
 
-    nume = form.get('nume')
-    descriere = form.get('descriere')
-    pret = form.get('pret')
-    ingrediente = form.get('ingrediente')
-    categorie = form.get('categorie')
-    alergeni = form.get('alergeni')
-
-    # 🔹 imagine principală
     main_image = request.files.get('imagine_principala')
-
-    # 🔹 galerie (multiple)
     gallery_images = request.files.getlist('imagini[]')
 
     new_main_image_url = None
     gallery_urls = []
 
-    # upload imagine principală
+    # ==============================
+    # 🔵 Upload imagine principală
+    # ==============================
     if main_image and main_image.filename:
         upload = cloudinary.uploader.upload(
             main_image,
             folder="dordegust/products"
         )
-        new_main_image_url = upload["secure_url"]
+        new_main_image_url = upload.get("secure_url")
 
-    # upload galerie
+    # ==============================
+    # 🔵 Upload galerie
+    # ==============================
     for img in gallery_images:
         if img and img.filename:
             upload = cloudinary.uploader.upload(
                 img,
                 folder="dordegust/products/gallery"
             )
-            gallery_urls.append(upload["secure_url"])
+            gallery_urls.append(upload.get("secure_url"))
 
+    # ==============================
+    # 🔵 UPDATE DB
+    # ==============================
     with get_db_connection() as conn:
         with conn.cursor() as cur:
 
-            # update produs (copertă + text)
+            # update produs (cu sau fără imagine nouă)
             if new_main_image_url:
                 cur.execute("""
                     UPDATE produse
-                    SET nume=%s, descriere=%s, pret=%s,
-                        ingrediente=%s, categorie=%s, alergeni=%s,
+                    SET nume=%s,
+                        descriere=%s,
+                        pret=%s,
+                        ingrediente=%s,
+                        categorie=%s,
+                        alergeni=%s,
                         imagine=%s
                     WHERE id=%s
                 """, (
-                    nume, descriere, pret,
-                    ingrediente, categorie, alergeni,
-                    new_main_image_url, pid
+                    nume,
+                    descriere,
+                    pret,
+                    ingrediente,
+                    categorie,
+                    alergeni,
+                    new_main_image_url,
+                    pid
                 ))
             else:
                 cur.execute("""
                     UPDATE produse
-                    SET nume=%s, descriere=%s, pret=%s,
-                        ingrediente=%s, categorie=%s, alergeni=%s
+                    SET nume=%s,
+                        descriere=%s,
+                        pret=%s,
+                        ingrediente=%s,
+                        categorie=%s,
+                        alergeni=%s
                     WHERE id=%s
                 """, (
-                    nume, descriere, pret,
-                    ingrediente, categorie, alergeni,
+                    nume,
+                    descriere,
+                    pret,
+                    ingrediente,
+                    categorie,
+                    alergeni,
                     pid
                 ))
 
-            # inserăm galeria
+            # inserăm imaginile noi în galerie
             for idx, url in enumerate(gallery_urls):
                 cur.execute("""
                     INSERT INTO product_images (product_id, image_url, sort_order)
@@ -369,10 +388,10 @@ def update_product(pid):
         conn.commit()
 
     return {
-    "ok": True,
-    "image": new_main_image_url,
-    "gallery_count": len(gallery_urls)
-}, 200
+        "ok": True,
+        "image": new_main_image_url,
+        "gallery_count": len(gallery_urls)
+    }, 200
 
 @app.route('/admin/delete-image/<int:image_id>', methods=['DELETE'])
 @login_required
