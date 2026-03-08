@@ -500,8 +500,10 @@ main {
     margin-bottom: 5px;
 }
 
-.admin-form input,
-.admin-form textarea {
+.admin-form input[type="text"],
+.admin-form input[type="number"],
+.admin-form textarea,
+.admin-form select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
