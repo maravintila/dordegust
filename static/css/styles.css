@@ -502,13 +502,13 @@ main {
 
 .admin-form input,
 .admin-form textarea {
-   width: 100%;
-  min-height: 120px;          /* mai mare */
-  resize: vertical;           /* să poți trage în jos */
-  white-space: nowrap;        /* 🔥 fără wrap */
-  overflow-x: auto;           /* scroll orizontal */
-  overflow-y: auto;
-  font-family: monospace;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--caramel);
+    border-radius: 4px;
+    font-family: 'Lato', Arial, sans-serif;
+    box-sizing: border-box;
 }
 
 .admin-form button {
@@ -784,28 +784,28 @@ header .hamburger {
   }
 
   .delete-image-btn {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(0, 0, 0, 0.55);
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(3px);
-  }
-  
-  .delete-image-btn:hover {
-    background: #b11226;
-    transform: scale(1.1);
-  }
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(3px);
+}
+
+.delete-image-btn:hover {
+  background: #b11226;
+  transform: scale(1.1);
+}
   
   
