@@ -232,6 +232,7 @@ small {
           if (btn.classList.contains("delete-button")) deleteRow(row);
         });
       
+      
         function enableEditMode(row) {
       
           row.classList.add("editing");
@@ -255,12 +256,13 @@ small {
       
           row.cells[6].innerHTML =
             `<textarea name="alergeni">${row.cells[6].textContent.trim()}</textarea>`;
-          
-            const textareas = row.querySelectorAll("textarea");
-textareas.forEach(t => {
-  t.style.height = "auto";
-  t.style.height = t.scrollHeight + "px";
-});
+      
+          // auto height textarea
+          const textareas = row.querySelectorAll("textarea");
+          textareas.forEach(t => {
+            t.style.height = "auto";
+            t.style.height = t.scrollHeight + "px";
+          });
       
           // 🔵 Categorie
           const catCell = row.cells[7];
@@ -291,7 +293,7 @@ textareas.forEach(t => {
       
           const container = document.getElementById(`gallery-${productId}`);
       
-          // 🔵 Coperta
+          // 🔵 Coperta existentă
           if (coverSrc) {
             const wrapper = document.createElement("div");
             wrapper.style.position = "relative";
@@ -325,8 +327,48 @@ textareas.forEach(t => {
             container.appendChild(wrapper);
           });
       
-          // 🔵 PREVIEW pentru imagini noi
+      
+          // ==============================
+          // 🔵 PREVIEW IMAGINE PRINCIPALĂ
+          // ==============================
+          const mainInput = imgCell.querySelector("input[name='imagine_principala']");
+      
+          mainInput.addEventListener("change", (e) => {
+      
+            const file = e.target.files[0];
+            if (!file) return;
+      
+            const reader = new FileReader();
+      
+            reader.onload = function(event) {
+      
+              // ștergem prima imagine (coperta veche)
+              const firstImage = container.querySelector("div img");
+              if (firstImage) {
+                firstImage.parentElement.remove();
+              }
+      
+              const wrapper = document.createElement("div");
+              wrapper.style.position = "relative";
+      
+              const img = document.createElement("img");
+              img.src = event.target.result;
+              img.className = "thumb-preview";
+      
+              wrapper.appendChild(img);
+      
+              container.prepend(wrapper);
+            };
+      
+            reader.readAsDataURL(file);
+          });
+      
+      
+          // ==============================
+          // 🔵 PREVIEW GALERIE
+          // ==============================
           const galleryInput = imgCell.querySelector("input[name='imagini[]']");
+      
           galleryInput.addEventListener("change", (e) => {
       
             for (const file of e.target.files) {
@@ -345,8 +387,7 @@ textareas.forEach(t => {
       
                 const del = document.createElement("button");
                 del.innerHTML = "&times;";
-            del.className = "delete-image-btn";
-
+                del.className = "delete-image-btn";
       
                 del.addEventListener("click", () => {
                   wrapper.remove();
@@ -365,6 +406,7 @@ textareas.forEach(t => {
           row.querySelector(".save-button").style.display = "inline-block";
         }
       
+      
         async function saveRow(row) {
       
           const productId = row.dataset.id;
@@ -382,7 +424,6 @@ textareas.forEach(t => {
             fd.append("imagine_principala", mainInput.files[0]);
           }
       
-          // 🔵 Trimitem DOAR imaginile noi rămase (care nu au fost șterse)
           const galleryInput = row.querySelector("input[name='imagini[]']");
           const container = document.getElementById(`gallery-${productId}`);
           const previews = container.querySelectorAll("div[data-temp='true'] img");
@@ -406,20 +447,20 @@ textareas.forEach(t => {
       
             setTimeout(() => {
               location.reload();
-            }, 1500);
+            }, 1200);
       
           } catch {
             showMessage("Eroare la salvare.", true);
           }
         }
       
-        // 🔵 DELETE imagine DB
+      
         document.addEventListener("click", async (e) => {
       
           if (!e.target.classList.contains("delete-image-btn")) return;
       
           const imageId = e.target.dataset.id;
-          const row = e.target.closest("tr");
+          if (!imageId) return;
       
           if (!confirm("Ștergi această imagine?")) return;
       
@@ -430,10 +471,6 @@ textareas.forEach(t => {
       
             if (!resp.ok) throw new Error();
       
-            let images = JSON.parse(row.dataset.images || "[]");
-            images = images.filter(img => String(img.id) !== String(imageId));
-            row.dataset.images = JSON.stringify(images);
-      
             e.target.parentElement.remove();
             showMessage("Imagine ștearsă.");
       
@@ -441,6 +478,7 @@ textareas.forEach(t => {
             showMessage("Eroare la ștergere.", true);
           }
         });
+      
       
         async function deleteRow(row) {
       
@@ -463,6 +501,7 @@ textareas.forEach(t => {
           }
         }
       
+      
         function showMessage(text, isError=false){
           const box = document.getElementById("admin-message");
           box.textContent = text;
@@ -479,7 +518,6 @@ textareas.forEach(t => {
       
       });
       </script>
-        
         
             <footer>
                 <p>&copy; 2025 Dor de Gust. Toate drepturile rezervate.</p>
